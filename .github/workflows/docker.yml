@@ -143,7 +143,7 @@ jobs:
         amd64-minimal,
         amd64-scipy,
    #     amd64-r,
-        amd64-tensorflow,
+        amd64-tensorflow
    #     amd64-datascience,
    #     amd64-pyspark,
    #     amd64-all-spark,
@@ -158,7 +158,7 @@ jobs:
           "minimal-notebook",
           "scipy-notebook",
     #      "r-notebook",
-          "tensorflow-notebook",
+          "tensorflow-notebook"
     #      "datascience-notebook",
     #      "pyspark-notebook",
     #      "all-spark-notebook"
