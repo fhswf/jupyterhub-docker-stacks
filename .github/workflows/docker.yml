@@ -1,7 +1,6 @@
 name: Build, test and push Docker Images
 
-env:
-  OWNER: ${{  GITHUB_REPOSITORY_OWNER  }}
+
 
 on:
   schedule:
