@@ -201,9 +201,6 @@ jobs:
       runsOn: ubuntu-latest
 
   aarch64-images-tag-push:
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     needs:
       [
         aarch64-base,
@@ -233,9 +230,6 @@ jobs:
         ]
 
   amd64-images-tag-push:
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     needs:
       [
         amd64-base,
