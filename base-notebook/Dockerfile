@@ -44,6 +44,10 @@ RUN apt-get update --yes && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini 
+RUN chmod +x /usr/bin/tini 
+
 # Configure environment
 ENV CONDA_DIR=/opt/conda \
     SHELL=/bin/bash \
@@ -136,9 +140,6 @@ RUN set -x && \
 EXPOSE 8888
 
 
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 # Configure container startup
 CMD ["start-notebook.sh"]
