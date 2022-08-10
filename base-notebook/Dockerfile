@@ -3,7 +3,7 @@
 
 # Ubuntu 22.04 (jammy)
 # https://hub.docker.com/_/ubuntu/?tab=tags&name=jammy
-ARG ROOT_CONTAINER=nvidia/cuda:10.0.3-devel-ubuntu18.04
+ARG ROOT_CONTAINER=nvcr.io/nvidia/cuda
 
 FROM $ROOT_CONTAINER
 

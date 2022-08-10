@@ -1,7 +1,5 @@
 name: Build, test and push Docker Images
 
-
-
 on:
   schedule:
     # Weekly, at 03:00 on Monday UTC time
@@ -12,7 +10,7 @@ on:
       # We use local reusable workflows to make architecture clean an simple
       # https://docs.github.com/en/actions/using-workflows/reusing-workflows
       - ".github/workflows/docker-build-test-upload.yml"
-      - ".github/workflows/docker-tag-manifest-push.yml"
+      #- ".github/workflows/docker-tag-manifest-push.yml"
       #- ".github/workflows/docker-wiki-update.yml"
 
       # We use local composite actions to combine multiple workflow steps within one action

@@ -1,7 +1,7 @@
 name: Download Docker image from GitHub artifacts, tag and push it to DockerHub
 
 env:
-  OWNER: $GITHUB_REPOSITORY_OWNER
+  OWNER: ${{ env.GITHUB_REPOSITORY_OWNER }}
 
 on:
   workflow_call:
@@ -77,15 +77,15 @@ jobs:
         run: docker rmi ${{ env.OWNER }}/jupyterhub/${{ matrix.image }}
         shell: bash
 
-      - name: Login to Docker Hub 🔐
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' || github.event_name == 'schedule'
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Login to Docker Hub 🔐
+      #  if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' || github.event_name == 'schedule'
+      #  uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+      #  with:
+      #    registry: ghcr.io
+      #    username: ${{ github.actor }}
+      #    password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push Images to Github 📤
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' || github.event_name == 'schedule'
-        run: docker push --all-tags ${{ env.OWNER }}/jupyterhub/${{ matrix.image }}  
-        shell: bash
+      #- name: Push Images to Github 📤
+      #  if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' || github.event_name == 'schedule'
+      #  run: docker push --all-tags ${{ env.OWNER }}/jupyterhub/${{ matrix.image }}  
+      #  shell: bash
