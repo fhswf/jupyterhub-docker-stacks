@@ -19,12 +19,12 @@ on:
       - ".github/actions/download-manifests/action.yml"
       - ".github/actions/load-image/action.yml"
 
-      - "all-spark-notebook/**"
+      #- "all-spark-notebook/**"
       - "base-notebook/**"
-      - "datascience-notebook/**"
+      #- "datascience-notebook/**"
       - "minimal-notebook/**"
-      - "pyspark-notebook/**"
-      - "r-notebook/**"
+      #- "pyspark-notebook/**"
+      #- "r-notebook/**"
       - "scipy-notebook/**"
       - "tensorflow-notebook/**"
 
@@ -44,12 +44,12 @@ on:
       - ".github/actions/download-manifests/action.yml"
       - ".github/actions/load-image/action.yml"
 
-      - "all-spark-notebook/**"
+      #- "all-spark-notebook/**"
       - "base-notebook/**"
-      - "datascience-notebook/**"
+      #- "datascience-notebook/**"
       - "minimal-notebook/**"
-      - "pyspark-notebook/**"
-      - "r-notebook/**"
+      #- "pyspark-notebook/**"
+      #- "r-notebook/**"
       - "scipy-notebook/**"
       - "tensorflow-notebook/**"
 
@@ -91,14 +91,14 @@ jobs:
       platform: amd64
       runsOn: ubuntu-latest
 
-  amd64-r:
-    needs: [amd64-minimal]
-    uses: ./.github/workflows/docker-build-test-upload.yml
-    with:
-      parentImage: minimal-notebook
-      image: r-notebook
-      platform: amd64
-      runsOn: ubuntu-latest
+  #amd64-r:
+  #  needs: [amd64-minimal]
+  #  uses: ./.github/workflows/docker-build-test-upload.yml
+  #  with:
+  #    parentImage: minimal-notebook
+  #    image: r-notebook
+  #    platform: amd64
+  #    runsOn: ubuntu-latest
 
   amd64-tensorflow:
     needs: [amd64-scipy]
@@ -109,32 +109,32 @@ jobs:
       platform: amd64
       runsOn: ubuntu-latest
 
-  amd64-datascience:
-    needs: [amd64-scipy]
-    uses: ./.github/workflows/docker-build-test-upload.yml
-    with:
-      parentImage: scipy-notebook
-      image: datascience-notebook
-      platform: amd64
-      runsOn: ubuntu-latest
+  #amd64-datascience:
+  #  needs: [amd64-scipy]
+  #  uses: ./.github/workflows/docker-build-test-upload.yml
+  #  with:
+  #    parentImage: scipy-notebook
+  #    image: datascience-notebook
+  #    platform: amd64
+  #    runsOn: ubuntu-latest
 
-  amd64-pyspark:
-    needs: [amd64-scipy]
-    uses: ./.github/workflows/docker-build-test-upload.yml
-    with:
-      parentImage: scipy-notebook
-      image: pyspark-notebook
-      platform: amd64
-      runsOn: ubuntu-latest
+  #amd64-pyspark:
+  #  needs: [amd64-scipy]
+  #  uses: ./.github/workflows/docker-build-test-upload.yml
+  #  with:
+  #    parentImage: scipy-notebook
+  #    image: pyspark-notebook
+  #    platform: amd64
+  #    runsOn: ubuntu-latest
 
-  amd64-all-spark:
-    needs: [amd64-pyspark]
-    uses: ./.github/workflows/docker-build-test-upload.yml
-    with:
-      parentImage: pyspark-notebook
-      image: all-spark-notebook
-      platform: amd64
-      runsOn: ubuntu-latest
+  #amd64-all-spark:
+  #  needs: [amd64-pyspark]
+  #  uses: ./.github/workflows/docker-build-test-upload.yml
+  #  with:
+  #    parentImage: pyspark-notebook
+  #    image: all-spark-notebook
+  #    platform: amd64
+  #    runsOn: ubuntu-latest
 
   amd64-images-tag-push:
     needs:
@@ -142,11 +142,11 @@ jobs:
         amd64-base,
         amd64-minimal,
         amd64-scipy,
-        amd64-r,
+   #     amd64-r,
         amd64-tensorflow,
-        amd64-datascience,
-        amd64-pyspark,
-        amd64-all-spark,
+   #     amd64-datascience,
+   #     amd64-pyspark,
+   #     amd64-all-spark,
       ]
     uses: ./.github/workflows/docker-tag-manifest-push.yml
     with:
@@ -157,11 +157,11 @@ jobs:
           "base-notebook",
           "minimal-notebook",
           "scipy-notebook",
-          "r-notebook",
+    #      "r-notebook",
           "tensorflow-notebook",
-          "datascience-notebook",
-          "pyspark-notebook",
-          "all-spark-notebook"
+    #      "datascience-notebook",
+    #      "pyspark-notebook",
+    #      "all-spark-notebook"
         ]
 
   #wiki-update:
