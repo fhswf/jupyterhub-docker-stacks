@@ -135,8 +135,12 @@ RUN set -x && \
 
 EXPOSE 8888
 
+
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 # Configure container startup
-ENTRYPOINT ["tini", "-g", "--"]
 CMD ["start-notebook.sh"]
 
 # Copy local files as late as possible to avoid cache busting
