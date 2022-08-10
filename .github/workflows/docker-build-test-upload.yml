@@ -1,7 +1,7 @@
 name: Download parent image, build new one, test it and upload to GitHub artifacts
 
 env:
-  OWNER: fhswf
+  OWNER: ${{ github.repository_owner }}
 
 on:
   workflow_call:
@@ -56,7 +56,7 @@ jobs:
         shell: bash
 
       - name: Run tests ✅
-        run: python3 -m tests.run_tests --short-image-name ${{ inputs.image }}
+        run: python3 -m tests.run_tests --short-image-name ${{ inputs.image }} --owner ${{ env.OWNER }}
         shell: bash
 
       - name: Save image as a tar for later use 💾
