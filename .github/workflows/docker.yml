@@ -137,25 +137,17 @@ jobs:
   #    runsOn: ubuntu-latest
 
   amd64-images-tag-push:
-    needs: >-
-      [
-        amd64-base,
-        amd64-minimal,
-        amd64-scipy,
-        amd64-tensorflow,
-      ]
+    needs: [ amd64-base, amd64-minimal, amd64-scipy, amd64-tensorflow ]
     uses: ./.github/workflows/docker-tag-manifest-push.yml
     with:
       platform: amd64
       runsOn: ubuntu-latest
-      images: >-
-        [
-          "base-notebook",
-          "minimal-notebook",
-          "scipy-notebook",
+      images: >- 
+        [ "base-notebook", 
+          "minimal-notebook", 
+          "scipy-notebook", 
           "tensorflow-notebook"
         ]
-
   #wiki-update:
   #  permissions:
   #    contents: write
