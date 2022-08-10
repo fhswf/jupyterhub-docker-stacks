@@ -137,16 +137,12 @@ jobs:
   #    runsOn: ubuntu-latest
 
   amd64-images-tag-push:
-    needs:
+    needs: >-
       [
         amd64-base,
         amd64-minimal,
         amd64-scipy,
-   #     amd64-r,
-        amd64-tensorflow
-   #     amd64-datascience,
-   #     amd64-pyspark,
-   #     amd64-all-spark,
+        amd64-tensorflow,
       ]
     uses: ./.github/workflows/docker-tag-manifest-push.yml
     with:
@@ -157,11 +153,7 @@ jobs:
           "base-notebook",
           "minimal-notebook",
           "scipy-notebook",
-    #      "r-notebook",
           "tensorflow-notebook"
-    #      "datascience-notebook",
-    #      "pyspark-notebook",
-    #      "all-spark-notebook"
         ]
 
   #wiki-update:
