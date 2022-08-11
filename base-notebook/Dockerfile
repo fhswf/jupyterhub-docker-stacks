@@ -45,8 +45,8 @@ RUN apt-get update --yes && \
     locale-gen
 
 ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini 
-RUN chmod +x /usr/bin/tini 
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini 
+RUN chmod +x /tini 
 
 # Configure environment
 ENV CONDA_DIR=/opt/conda \
