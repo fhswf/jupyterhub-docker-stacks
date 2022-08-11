@@ -3,7 +3,7 @@
 
 # Ubuntu 22.04 (jammy)
 # https://hub.docker.com/_/ubuntu/?tab=tags&name=jammy
-ARG ROOT_CONTAINER=ubuntu:22.04
+ARG ROOT_CONTAINER=nvidia/cuda:10.2-devel-ubuntu18.04
 
 FROM $ROOT_CONTAINER
 
@@ -39,14 +39,14 @@ RUN apt-get update --yes && \
     #   we use `run-one-constantly` to support `RESTARTABLE` option
     run-one \
     sudo \
-    # - tini is installed as a helpful container entrypoint that reaps zombie
-    #   processes and such of the actual executable we want to start, see
-    #   https://github.com/krallin/tini#why-tini for details.
-    tini \
     wget && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
+
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini 
+RUN chmod +x /tini 
 
 # Configure environment
 ENV CONDA_DIR=/opt/conda \
@@ -139,8 +139,9 @@ RUN set -x && \
 
 EXPOSE 8888
 
+
+ENTRYPOINT ["/tini", "--"]
 # Configure container startup
-ENTRYPOINT ["tini", "-g", "--"]
 CMD ["start-notebook.sh"]
 
 # Copy local files as late as possible to avoid cache busting
