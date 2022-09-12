@@ -3,8 +3,7 @@
 
 # Ubuntu 22.04 (jammy)
 # https://hub.docker.com/_/ubuntu/?tab=tags&name=jammy
-ARG ROOT_CONTAINER=nvidia/cuda:10.2-devel-ubuntu18.04
-
+ARG ROOT_CONTAINER=nvidia/cuda:11.7.1-runtime-ubuntu18.04
 FROM $ROOT_CONTAINER
 
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
