@@ -10,8 +10,8 @@ on:
       # We use local reusable workflows to make architecture clean an simple
       # https://docs.github.com/en/actions/using-workflows/reusing-workflows
       - ".github/workflows/docker-build-test-upload.yml"
-      #- ".github/workflows/docker-tag-manifest-push.yml"
-      #- ".github/workflows/docker-wiki-update.yml"
+      - ".github/workflows/docker-tag-manifest-push.yml"
+      - ".github/workflows/docker-wiki-update.yml"
 
       # We use local composite actions to combine multiple workflow steps within one action
       # https://docs.github.com/en/actions/creating-actions/about-custom-actions#composite-actions
@@ -37,6 +37,7 @@ on:
     paths:
       - ".github/workflows/docker.yml"
       - ".github/workflows/docker-build-test-upload.yml"
+      - ".github/workflows/docker-merge-tags.yml"
       - ".github/workflows/docker-tag-manifest-push.yml"
       #- ".github/workflows/docker-wiki-update.yml"
 
@@ -65,13 +66,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  aarch64-base:
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: ""
+      image: base-notebook
+      platform: aarch64
+      runsOn: ARM64
+
   amd64-base:
     uses: ./.github/workflows/docker-build-test-upload.yml
     with:
       parentImage: ""
       image: base-notebook
-      platform: amd64
+      platform: x86_64
       runsOn: ubuntu-latest
+
+  aarch64-minimal:
+    needs: [aarch64-base]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: base-notebook
+      image: minimal-notebook
+      platform: aarch64
+      runsOn: ARM64
 
   amd64-minimal:
     needs: [amd64-base]
@@ -79,8 +97,17 @@ jobs:
     with:
       parentImage: base-notebook
       image: minimal-notebook
-      platform: amd64
+      platform: x86_64
       runsOn: ubuntu-latest
+
+  aarch64-scipy:
+    needs: [aarch64-minimal]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: minimal-notebook
+      image: scipy-notebook
+      platform: aarch64
+      runsOn: ARM64
 
   amd64-scipy:
     needs: [amd64-minimal]
@@ -91,64 +118,169 @@ jobs:
       platform: amd64
       runsOn: ubuntu-latest
 
-  #amd64-r:
-  #  needs: [amd64-minimal]
-  #  uses: ./.github/workflows/docker-build-test-upload.yml
-  #  with:
-  #    parentImage: minimal-notebook
-  #    image: r-notebook
-  #    platform: amd64
-  #    runsOn: ubuntu-latest
+  aarch64-r:
+    needs: [aarch64-minimal]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: minimal-notebook
+      image: r-notebook
+      platform: aarch64
+      runsOn: ARM64
 
-  #amd64-tensorflow:
-  #  needs: [amd64-scipy]
-  #  uses: ./.github/workflows/docker-build-test-upload.yml
-  #  with:
-  #    parentImage: scipy-notebook
-  #    image: tensorflow-notebook
-  #    platform: amd64
-  #    runsOn: ubuntu-latest
+  x86_64-r:
+    needs: [x86_64-minimal]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: minimal-notebook
+      image: r-notebook
+      platform: x86_64
+      runsOn: ubuntu-latest
 
-  #amd64-datascience:
-  #  needs: [amd64-scipy]
-  #  uses: ./.github/workflows/docker-build-test-upload.yml
-  #  with:
-  #    parentImage: scipy-notebook
-  #    image: datascience-notebook
-  #    platform: amd64
-  #    runsOn: ubuntu-latest
+  x86_64-tensorflow:
+    needs: [x86_64-scipy]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: scipy-notebook
+      image: tensorflow-notebook
+      platform: x86_64
+      runsOn: ubuntu-latest
 
-  #amd64-pyspark:
-  #  needs: [amd64-scipy]
-  #  uses: ./.github/workflows/docker-build-test-upload.yml
-  #  with:
-  #    parentImage: scipy-notebook
-  #    image: pyspark-notebook
-  #    platform: amd64
-  #    runsOn: ubuntu-latest
+  aarch64-datascience:
+    needs: [aarch64-scipy]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: scipy-notebook
+      image: datascience-notebook
+      platform: aarch64
+      runsOn: ARM64
 
-  #amd64-all-spark:
-  #  needs: [amd64-pyspark]
-  #  uses: ./.github/workflows/docker-build-test-upload.yml
-  #  with:
-  #    parentImage: pyspark-notebook
-  #    image: all-spark-notebook
-  #    platform: amd64
-  #    runsOn: ubuntu-latest
+  x86_64-datascience:
+    needs: [x86_64-scipy]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: scipy-notebook
+      image: datascience-notebook
+      platform: x86_64
+      runsOn: ubuntu-latest
 
-  amd64-images-tag-push:
-    needs: [ amd64-base, amd64-minimal, amd64-scipy ]
+  aarch64-pyspark:
+    needs: [aarch64-scipy]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: scipy-notebook
+      image: pyspark-notebook
+      platform: aarch64
+      runsOn: ARM64
+
+  x86_64-pyspark:
+    needs: [x86_64-scipy]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: scipy-notebook
+      image: pyspark-notebook
+      platform: x86_64
+      runsOn: ubuntu-latest
+
+  aarch64-all-spark:
+    needs: [aarch64-pyspark]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: pyspark-notebook
+      image: all-spark-notebook
+      platform: aarch64
+      runsOn: ARM64
+
+  x86_64-all-spark:
+    needs: [x86_64-pyspark]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: pyspark-notebook
+      image: all-spark-notebook
+      platform: x86_64
+      runsOn: ubuntu-latest
+
+  aarch64-images-tag-push:
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    needs:
+      [
+        aarch64-base,
+        aarch64-minimal,
+        aarch64-scipy,
+        aarch64-r,
+        aarch64-datascience,
+        aarch64-pyspark,
+        aarch64-all-spark,
+      ]
     uses: ./.github/workflows/docker-tag-manifest-push.yml
     with:
-      platform: amd64
-      runsOn: ubuntu-latest
-      images: >- 
-        [ "base-notebook", 
-          "minimal-notebook", 
-          "scipy-notebook"
+      platform: aarch64
+      # https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations
+      # The strategy property is not supported in any job that calls a reusable workflow
+      # Using the workaround: https://github.community/t/reusable-workflow-with-strategy-matrix/205676/2
+      images: >-
+        [
+          "base-notebook",
+          "minimal-notebook",
+          "scipy-notebook",
+          "r-notebook",
+          "datascience-notebook",
+          "pyspark-notebook",
+          "all-spark-notebook"
         ]
-  #wiki-update:
-  #  permissions:
-  #    contents: write
-  #  needs: [aarch64-images-tag-push, amd64-images-tag-push]
-  #  uses: ./.github/workflows/docker-wiki-update.yml
+
+  x86_64-images-tag-push:
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    needs:
+      [
+        x86_64-base,
+        x86_64-minimal,
+        x86_64-scipy,
+        x86_64-r,
+        x86_64-tensorflow,
+        x86_64-datascience,
+        x86_64-pyspark,
+        x86_64-all-spark,
+      ]
+    uses: ./.github/workflows/docker-tag-manifest-push.yml
+    with:
+      platform: x86_64
+      images: >-
+        [
+          "base-notebook",
+          "minimal-notebook",
+          "scipy-notebook",
+          "r-notebook",
+          "tensorflow-notebook",
+          "datascience-notebook",
+          "pyspark-notebook",
+          "all-spark-notebook"
+        ]
+
+  merge-tags:
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    needs: [aarch64-images-tag-push, x86_64-images-tag-push]
+    uses: ./.github/workflows/docker-merge-tags.yml
+    with:
+      images: >-
+        [
+          "base-notebook",
+          "minimal-notebook",
+          "scipy-notebook",
+          "r-notebook",
+          "tensorflow-notebook",
+          "datascience-notebook",
+          "pyspark-notebook",
+          "all-spark-notebook"
+        ]
+
+  wiki-update:
+    permissions:
+      contents: write
+    needs: [aarch64-images-tag-push, amd64-images-tag-push]
+    uses: ./.github/workflows/docker-wiki-update.yml

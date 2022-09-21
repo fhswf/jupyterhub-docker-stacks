@@ -15,14 +15,10 @@ on:
         description: Image platform
         required: true
         type: string
-      runsOn:
-        description: GitHub Actions Runner image
-        required: true
-        type: string
 
 jobs:
   tag-push:
-    runs-on: ${{ inputs.runsOn }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -81,7 +77,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push Images to Github 📤
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' || github.event_name == 'schedule'
-        run: docker push --all-tags ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ matrix.image }}  
+      - name: Download tags file 📥
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.image }}-${{ inputs.platform }}-tags
+          path: /tmp/tags/
+      - name: Apply tags to the loaded image 🏷
+        run: python3 -m tagging.apply_tags --short-image-name ${{ matrix.image }} --tags-dir /tmp/tags/ --platform ${{ inputs.platform }} --owner ${{ env.OWNER }}
+
+      - name: Push Images to Docker Hub 📤
+        if: github.ref == 'refs/heads/main' || github.event_name == 'schedule'
+        run: docker push --all-tags ${{ env.OWNER }}/${{ matrix.image }}
         shell: bash
