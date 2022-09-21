@@ -4,6 +4,7 @@
 import argparse
 import logging
 from pathlib import Path
+from platform import platform
 
 from tagging.docker_runner import DockerRunner
 from tagging.get_platform import get_platform
@@ -14,6 +15,7 @@ LOGGER = logging.getLogger(__name__)
 
 def write_tags_file(
     short_image_name: str,
+    tag_prefix: str, 
     owner: str,
     tags_dir: Path,
 ) -> None:
@@ -24,10 +26,10 @@ def write_tags_file(
     taggers, _ = get_taggers_and_manifests(short_image_name)
 
     image = f"{owner}/{short_image_name}:latest"
-    tags_prefix = get_platform()
-    filename = f"{tags_prefix}-{short_image_name}.txt"
+    platform = get_platform()
+    filename = f"{platform}-{tag_prefix}-{short_image_name}.txt"
 
-    tags = [f"{owner}/{short_image_name}:{tags_prefix}-latest"]
+    tags = [f"{owner}/{short_image_name}:{platform}-{tag_prefix}-latest"]
     with DockerRunner(image) as container:
         for tagger in taggers:
             tagger_name = tagger.__class__.__name__
@@ -35,7 +37,7 @@ def write_tags_file(
             LOGGER.info(
                 f"Calculated tag, tagger_name: {tagger_name} tag_value: {tag_value}"
             )
-            tags.append(f"{owner}/{short_image_name}:{tags_prefix}-{tag_value}")
+            tags.append(f"{owner}/{short_image_name}:{platform}-{tag_prefix}-{tag_value}")
     tags_dir.mkdir(parents=True, exist_ok=True)
     (tags_dir / filename).write_text("\n".join(tags))
 
@@ -50,6 +52,11 @@ if __name__ == "__main__":
         help="Short image name to write tags for",
     )
     arg_parser.add_argument(
+        "--tag-prefix",
+        required=True,
+        help="Prefix used for all kinds of extra versioning",
+    )
+    arg_parser.add_argument(
         "--tags-dir",
         required=True,
         type=Path,
@@ -60,6 +67,11 @@ if __name__ == "__main__":
         required=True,
         help="Owner of the image",
     )
+    #arg_parser.add_argument(
+    #    "--repository",
+    #    required=True,
+    #    help="Repository for image to apply tags for",
+    #)
     args = arg_parser.parse_args()
 
-    write_tags_file(args.short_image_name, args.owner, args.tags_dir)
+    write_tags_file(args.short_image_name, args.tag_prefix, args.owner, args.tags_dir)

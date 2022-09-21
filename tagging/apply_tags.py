@@ -17,6 +17,7 @@ def apply_tags(
     owner: str,
     tags_dir: Path,
     platform: str,
+    tag_prefix: str
 ) -> None:
     """
     Tags <owner>/<short_image_name>:latest with the tags
@@ -25,7 +26,7 @@ def apply_tags(
     LOGGER.info(f"Tagging image: {short_image_name}")
 
     image = f"{owner}/{short_image_name}:latest"
-    filename = f"{platform}-{short_image_name}.txt"
+    filename = f"{platform}-{tag_prefix}-{short_image_name}.txt"
     tags = (tags_dir / filename).read_text().splitlines()
 
     for tag in tags:
@@ -45,6 +46,12 @@ if __name__ == "__main__":
         required=True,
         help="Short image name to apply tags for",
     )
+    #arg_parser.add_argument(
+    #    "--repository",
+    #    required=True,
+    #    type=Path,
+    #    help="Repository for image to apply tags for",
+    #)
     arg_parser.add_argument(
         "--tags-dir",
         required=True,
@@ -59,10 +66,16 @@ if __name__ == "__main__":
         help="Image platform",
     )
     arg_parser.add_argument(
+        "--tag-prefix",
+        required=True,
+        type=str,
+        help="Tag prefix used for all kinds of extra versioning",
+    )
+    arg_parser.add_argument(
         "--owner",
         required=True,
         help="Owner of the image",
     )
     args = arg_parser.parse_args()
 
-    apply_tags(args.short_image_name, args.owner, args.tags_dir, args.platform)
+    apply_tags(args.short_image_name, args.owner, args.tags_dir, args.platform, args.tag_prefix)

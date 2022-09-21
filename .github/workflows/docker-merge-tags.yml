@@ -1,8 +1,5 @@
 name: Download Docker images from GitHub artifacts and merge tags
 
-env:
-  OWNER: ${{ github.repository_owner }}
-
 on:
   workflow_call:
     inputs:
@@ -27,6 +24,7 @@ jobs:
     steps:
       - name: Checkout Repo ⚡️
         uses: actions/checkout@v3
+        
       - name: Create dev environment 📦
         uses: ./.github/actions/create-dev-env
         with:

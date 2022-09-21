@@ -1,0 +1,146 @@
+name: Builds tests and uploads all notebook images a base image (mainly cuda versions) and compatibl plattform
+
+on:
+  workflow_call:
+    inputs:
+      baseImage:
+        description: Base images for which all notebooks should be build
+        required: true
+        type: string
+      platform:
+        description: Platfrom for which all notebooks should be build
+        required: true
+        type: string
+      runsOn:
+        description: GitHub Actions Runner image
+        required: true
+        type: string
+
+jobs:
+  base:
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: ${{ inputs.baseImage }}
+      image: base-notebook
+      platform: ${{ inputs.platform }}
+      runsOn: ${{ inputs.runsOn }}
+
+  minimal:
+    needs: [base]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: base-notebook
+      image: minimal-notebook
+      platform: ${{ inputs.platform }}
+      runsOn:  ${{ inputs.runsOn }}
+
+  scipy:
+    needs: [minimal]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: minimal-notebook
+      image: scipy-notebook
+      platform: ${{ inputs.platform }}
+      runsOn: ${{ inputs.runsOn }}
+
+  r:
+    needs: [minimal]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: minimal-notebook
+      image: r-notebook
+      platform: ${{ inputs.platform }}
+      runsOn: ${{ inputs.runsOn }}
+      
+  datascience:
+    needs: [scipy]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: scipy-notebook
+      image: datascience-notebook
+      platform: ${{ inputs.platform }}
+      runsOn: ${{ inputs.runsOn }}
+
+  #tensorflow:
+  #  needs: [scipy]
+  #  uses: ./.github/workflows/docker-build-test-upload.yml
+  #  with:
+  #    parentImage: scipy-notebook
+  #    image: tensorflow-notebook
+  #    platform: ${{ inputs.platform }}
+  #    runsOn: ${{ inputs.runsOn }}
+
+  pyspark:
+    needs: [scipy]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: scipy-notebook
+      image: pyspark-notebook
+      platform: ${{ inputs.platform }}
+      runsOn: ${{ inputs.runsOn }}
+
+  all-spark:
+    needs: [pyspark]
+    uses: ./.github/workflows/docker-build-test-upload.yml
+    with:
+      parentImage: pyspark-notebook
+      image: all-spark-notebook
+      platform: ${{ inputs.platform }}
+      runsOn: ${{ inputs.runsOn }}
+
+  # push images
+  images-tag-push:
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    needs:
+      [
+        base,
+        minimal,
+        scipy,
+        r,
+        datascience,
+        pyspark,
+        all-spark,
+      ]
+    uses: ./.github/workflows/docker-tag-manifest-push.yml
+    with:
+      platform: aarch64
+      # https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations
+      # The strategy property is not supported in any job that calls a reusable workflow
+      # Using the workaround: https://github.community/t/reusable-workflow-with-strategy-matrix/205676/2
+      images: >-
+        [
+          "base-notebook",
+          "minimal-notebook",
+          "scipy-notebook",
+          "r-notebook",
+          "datascience-notebook",
+          "pyspark-notebook",
+          "all-spark-notebook"
+        ]
+
+  merge-tags:
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    needs: [images-tag-push]
+    uses: ./.github/workflows/docker-merge-tags.yml
+    with:
+      images: >-
+        [
+          "base-notebook",
+          "minimal-notebook",
+          "scipy-notebook",
+          "r-notebook",
+          "tensorflow-notebook",
+          "datascience-notebook",
+          "pyspark-notebook",
+          "all-spark-notebook"
+        ]
+
+  wiki-update:
+    permissions:
+      contents: write
+    needs: [x86_64-images-tag-push]
+    uses: ./.github/workflows/docker-wiki-update.yml
