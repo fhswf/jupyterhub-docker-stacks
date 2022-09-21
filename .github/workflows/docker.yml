@@ -1,5 +1,13 @@
 name: Build, test and push Docker Images
 
+env:
+  REPOSITORY: ${{ github.repository }}
+  REGISTRY: ghcr.io 
+  BASE_IMAGES: ["nvidia/cuda:11.7.1-cudnn8-devel-ubuntu18.04"]
+  CUDA_VERSIONS: ["11.7.1", "11.6.2"] # ["11.5.2", "11.4.3"]
+  CUDA_IMAGE_VARIANTS: ["cudnn8-runtime", "runtime", "cudnn8-devel", "devel"]
+  OS_VERSIONS: ["ubuntu18.04", "ubuntu20.04", "ubuntu22.04"]
+
 on:
   schedule:
     # Weekly, at 03:00 on Monday UTC time
@@ -10,8 +18,9 @@ on:
       # We use local reusable workflows to make architecture clean an simple
       # https://docs.github.com/en/actions/using-workflows/reusing-workflows
       - ".github/workflows/docker-build-test-upload.yml"
+      - ".github/workflows/docker-merge-tags.yml"
       - ".github/workflows/docker-tag-manifest-push.yml"
-      - ".github/workflows/docker-wiki-update.yml"
+      #- ".github/workflows/docker-wiki-update.yml"
 
       # We use local composite actions to combine multiple workflow steps within one action
       # https://docs.github.com/en/actions/creating-actions/about-custom-actions#composite-actions
@@ -19,14 +28,15 @@ on:
       - ".github/actions/download-manifests/action.yml"
       - ".github/actions/load-image/action.yml"
 
-      #- "all-spark-notebook/**"
+      - "all-spark-notebook/**"
       - "base-notebook/**"
-      #- "datascience-notebook/**"
+      - "datascience-notebook/**"
       - "minimal-notebook/**"
-      #- "pyspark-notebook/**"
-      #- "r-notebook/**"
+      - "pyspark-notebook/**"
+      - "r-notebook/**"
       - "scipy-notebook/**"
-      #- "tensorflow-notebook/**"
+      - "tensorflow-notebook/**"
+      - "torch-notebook/**"
 
       - "tagging/**"
       - "tests/**"
@@ -45,14 +55,15 @@ on:
       - ".github/actions/download-manifests/action.yml"
       - ".github/actions/load-image/action.yml"
 
-      #- "all-spark-notebook/**"
+      - "all-spark-notebook/**"
       - "base-notebook/**"
-      #- "datascience-notebook/**"
+      - "datascience-notebook/**"
       - "minimal-notebook/**"
-      #- "pyspark-notebook/**"
-      #- "r-notebook/**"
+      - "pyspark-notebook/**"
+      - "r-notebook/**"
       - "scipy-notebook/**"
-      #- "tensorflow-notebook/**"
+      - "tensorflow-notebook/**"
+      - "torch-notebook/**"
 
       - "tagging/**"
       - "tests/**"
@@ -67,17 +78,29 @@ concurrency:
 
 jobs:
   aarch64-base:
+    strategy:
+      fail-fast: false
+      matrix:
+        CUDA_VERSIONS: ${{ env.CUDA_VERSIONS }}
+        CUDA_IMAGE_VARIANTS: ${{ env.CUDA_IMAGE_VARIANTS }}
+        OS_VERSIONS: ${{ env.OS_VERSIONS }}
     uses: ./.github/workflows/docker-build-test-upload.yml
     with:
-      parentImage: ""
+      parentImage: nvidia/cuda:${{ matrix.CUDA_VERSIONS }}-${{ matrix.CUDA_IMAGE_VARIANTS }}-${{ matrix.OS_VERSIONS }}"
       image: base-notebook
       platform: aarch64
       runsOn: ARM64
 
-  amd64-base:
+  x86_64-base:
+    strategy:
+      fail-fast: false
+      matrix:
+        CUDA_VERSIONS: ${{ env.CUDA_VERSIONS }}
+        CUDA_IMAGE_VARIANTS: ${{ env.CUDA_IMAGE_VARIANTS }}
+        OS_VERSIONS: ${{ env.OS_VERSIONS }}
     uses: ./.github/workflows/docker-build-test-upload.yml
     with:
-      parentImage: ""
+      parentImage: nvidia/cuda:${{ matrix.CUDA_VERSIONS }}-${{ matrix.CUDA_IMAGE_VARIANTS }}-${{ matrix.OS_VERSIONS }}"
       image: base-notebook
       platform: x86_64
       runsOn: ubuntu-latest
@@ -91,8 +114,8 @@ jobs:
       platform: aarch64
       runsOn: ARM64
 
-  amd64-minimal:
-    needs: [amd64-base]
+  x86_64-minimal:
+    needs: [x86_64-base]
     uses: ./.github/workflows/docker-build-test-upload.yml
     with:
       parentImage: base-notebook
@@ -109,23 +132,23 @@ jobs:
       platform: aarch64
       runsOn: ARM64
 
-  amd64-scipy:
-    needs: [amd64-minimal]
+  x86_64-scipy:
+    needs: [x86_64-minimal]
     uses: ./.github/workflows/docker-build-test-upload.yml
     with:
       parentImage: minimal-notebook
       image: scipy-notebook
-      platform: amd64
+      platform: x86_64
       runsOn: ubuntu-latest
 
-  aarch64-r:
-    needs: [aarch64-minimal]
+  amd64-r:
+    needs: [amd64-minimal]
     uses: ./.github/workflows/docker-build-test-upload.yml
     with:
       parentImage: minimal-notebook
       image: r-notebook
-      platform: aarch64
-      runsOn: ARM64
+      platform: amd64
+      runsOn: ubuntu-latest
 
   x86_64-r:
     needs: [x86_64-minimal]
@@ -145,14 +168,14 @@ jobs:
       platform: x86_64
       runsOn: ubuntu-latest
 
-  aarch64-datascience:
-    needs: [aarch64-scipy]
+  amd64-pyspark:
+    needs: [amd64-scipy]
     uses: ./.github/workflows/docker-build-test-upload.yml
     with:
       parentImage: scipy-notebook
-      image: datascience-notebook
-      platform: aarch64
-      runsOn: ARM64
+      image: pyspark-notebook
+      platform: amd64
+      runsOn: ubuntu-latest
 
   x86_64-datascience:
     needs: [x86_64-scipy]
@@ -282,5 +305,5 @@ jobs:
   wiki-update:
     permissions:
       contents: write
-    needs: [aarch64-images-tag-push, amd64-images-tag-push]
+    needs: [aarch64-images-tag-push, x86_64-images-tag-push]
     uses: ./.github/workflows/docker-wiki-update.yml

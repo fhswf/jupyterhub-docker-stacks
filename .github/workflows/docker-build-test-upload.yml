@@ -1,8 +1,7 @@
 name: Download parent image, build new one, test and upload it and tags and manifests to GitHub artifacts
 
 env:
-  OWNER: ${{ github.repository }}
-  REGISTRY: ghcr.io 
+  repository: ${{ github.repository }}
 
 on:
   workflow_call:
@@ -23,8 +22,12 @@ on:
         description: GitHub Actions Runner image
         required: true
         type: string
-
-
+      registry:
+        description: Registry for uploading and tagging images (defauts to ghcr.io)
+        required: false
+        type: string
+        default: ghcr.io
+        
 jobs:
   build-test-upload:
     runs-on: ${{ inputs.runsOn }}
