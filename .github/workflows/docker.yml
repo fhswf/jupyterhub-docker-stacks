@@ -79,6 +79,7 @@ concurrency:
 
 jobs:
   build-push:
+    # this will: 1. build all images, 2. create manifest
     uses: ./.github/workflows/docker-build-image-chain.yml
     if: github.ref == 'refs/heads/main'
     strategy:
@@ -89,12 +90,13 @@ jobs:
         os: ${{ env.OS_VERSIONS }} 
         architecture: ${{ env.ARCHITECTURE }}
     secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      REGISTRY_USERNAME: ${{ github.actor }}
+      REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
       baseImage: nvidia/cuda:${{ matrix.cudaVersion }}-${{ matrix.cudaVariant }}-${{ matrix.os }}"
       platform: ${{ matrix.architecture.platform }}
       runsOn: ${{ matrix.architecture.runner }}
+      registry: ${{ env.REGISTRY }}
 
   #merge-tags:
   #  secrets:

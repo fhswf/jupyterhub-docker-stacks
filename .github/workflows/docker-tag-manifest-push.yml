@@ -1,9 +1,5 @@
 name: Download Docker image from GitHub artifacts, tag and push it to DockerHub
 
-env:
-  OWNER: ${{ github.repository }}
-  REGISTRY: ghcr.io 
-
 on:
   workflow_call:
     inputs:
@@ -15,7 +11,22 @@ on:
         description: Image platform
         required: true
         type: string
+      registry:
+        description: docker image registry, defaults to docker.io
+        required: false
+        type: string
+        default: docker.io
+      owner:
+        description: Should be equal to the repository, defaults to ${{ github.repository }}
+        required: false
+        type: string
+        default: ${{ github.repository }}
 
+    secrets:
+      REGISTRY_USERNAME:
+        required: true
+      REGISTRY_TOKEN:
+        required: true
 jobs:
   tag-push:
     runs-on: ubuntu-latest
@@ -49,12 +60,12 @@ jobs:
 
       - name: Create tags 🏷
         run: |
-          python3 -m tagging.tag_image --short-image-name ${{ matrix.image }} --owner ${{ env.OWNER }}
+          python3 -m tagging.tag_image --short-image-name ${{ matrix.image }} --owner ${{ inputs.owner }}
           docker image ls -a
         shell: bash
 
       - name: Write manifest and build history file 🏷
-        run: python3 -m tagging.write_manifest --short-image-name ${{ matrix.image }} --hist-line-dir /tmp/hist_lines/ --manifest-dir /tmp/manifests/ --owner ${{ env.OWNER }}
+        run: python3 -m tagging.write_manifest --short-image-name ${{ matrix.image }} --hist-line-dir /tmp/hist_lines/ --manifest-dir /tmp/manifests/ --owner ${{ inputs.owner }}
         shell: bash
       - name: Upload manifest file 💾
         uses: actions/upload-artifact@v3
@@ -73,9 +84,9 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' || github.event_name == 'schedule'
         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ inputs.registry }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
 
       - name: Download tags file 📥
         uses: actions/download-artifact@v3
@@ -83,9 +94,9 @@ jobs:
           name: ${{ matrix.image }}-${{ inputs.platform }}-tags
           path: /tmp/tags/
       - name: Apply tags to the loaded image 🏷
-        run: python3 -m tagging.apply_tags --short-image-name ${{ matrix.image }} --tags-dir /tmp/tags/ --platform ${{ inputs.platform }} --owner ${{ env.OWNER }}
+        run: python3 -m tagging.apply_tags --short-image-name ${{ matrix.image }} --tags-dir /tmp/tags/ --platform ${{ inputs.platform }} --owner ${{ inputs.owner }}
 
       - name: Push Images to Docker Hub 📤
         if: github.ref == 'refs/heads/main' || github.event_name == 'schedule'
-        run: docker push --all-tags ${{ env.OWNER }}/${{ matrix.image }}
+        run: docker push --all-tags ${{ inputs.owner }}/${{ matrix.image }}
         shell: bash

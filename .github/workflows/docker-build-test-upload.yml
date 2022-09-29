@@ -20,12 +20,12 @@ on:
         required: true
         type: string
       registry:
-        description: Registry for uploading and tagging images (defauts to ghcr.io)
+        description: Registry for uploading and tagging images, defauts to docker.io
         required: false
         type: string
-        default: ghcr.io
+        default: docker.io
       owner:
-        description: Repository for uploading and tagging images (defauts to ${{ github.repository }})
+        description: Repository for uploading and tagging images, defauts to ${{ github.repository }}
         required: false
         type: string
         default: ${{ github.repository }}
@@ -33,6 +33,7 @@ on:
         description: Tag prefix for extra versioning
         required: true
         type: string
+
         
 jobs:
   build-test-upload:

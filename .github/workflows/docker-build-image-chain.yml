@@ -15,6 +15,26 @@ on:
         description: GitHub Actions Runner image
         required: true
         type: string
+      registry:
+        description: Registry for uploading and tagging images, defauts to docker.io
+        required: false
+        type: string
+        default: docker.io
+      owner:
+        description: Repository for uploading and tagging images, defauts to ${{ github.repository }}
+        required: false
+        type: string
+        default: ${{ github.repository }}
+      prefix:
+        description: Tag prefix for extra versioning
+        required: true
+        type: string
+
+    secrets:
+      REGISTRY_USERNAME:
+        required: true
+      REGISTRY_TOKEN:
+        required: true
 
 jobs:
   base:
