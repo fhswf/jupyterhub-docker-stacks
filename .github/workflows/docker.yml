@@ -4,10 +4,10 @@ env:
   REPOSITORY: ${{ github.repository }}
   REGISTRY: ghcr.io 
   # BASE_IMAGES: ["nvidia/cuda:11.7.1-cudnn8-devel-ubuntu18.04"]
-  CUDA_VERSIONS: [11.7.1, 11.6.2] # ["11.5.2", "11.4.3"]
+  CUDA_VERSIONS: [11.7.1] # [" 11.6.2", "11.5.2", "11.4.3"]
   CUDA_IMAGE_VARIANTS: [cudnn8-runtime, runtime, cudnn8-devel, devel]
-  OS_VERSIONS: [ ubuntu18.04, ubuntu20.04, ubuntu22.04]
-  ARCHITECTURE: [ {platform: aarch64, runner: ARM64}, {platform: x86_64, runner: ubuntu-latest}]
+  OS_VERSIONS: [ ubuntu18.04, ubuntu20.04, ubuntu22.04 ]
+  ARCHITECTURE: [ {platform: x86_64, runner: ubuntu-latest} ] # [{platform: aarch64, runner: ARM64}, ]
 
 on:
   schedule:
@@ -37,7 +37,7 @@ on:
       - "r-notebook/**"
       - "scipy-notebook/**"
       #- "tensorflow-notebook/**"
-      - "torch-notebook/**"
+      #- "torch-notebook/**"
 
       - "tagging/**"
       - "tests/**"
@@ -64,7 +64,7 @@ on:
       - "r-notebook/**"
       - "scipy-notebook/**"
       #- "tensorflow-notebook/**"
-      - "torch-notebook/**"
+      #- "torch-notebook/**"
 
       - "tagging/**"
       - "tests/**"
@@ -78,7 +78,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-push:
+  build-push-cuda:
     # this will: 1. build all images, 2. create manifest
     uses: ./.github/workflows/docker-build-image-chain.yml
     if: github.ref == 'refs/heads/main'
@@ -94,6 +94,25 @@ jobs:
       REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
       baseImage: nvidia/cuda:${{ matrix.cudaVersion }}-${{ matrix.cudaVariant }}-${{ matrix.os }}"
+      platform: ${{ matrix.architecture.platform }}
+      runsOn: ${{ matrix.architecture.runner }}
+      registry: ${{ env.REGISTRY }}
+
+
+  build-push:
+  # the same tihout cuda base images, here its just ubuntu
+    uses: ./.github/workflows/docker-build-image-chain.yml
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ env.OS_VERSIONS }} 
+        architecture: ${{ env.ARCHITECTURE }}
+    secrets:
+      REGISTRY_USERNAME: ${{ github.actor }}
+      REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      baseImage: ${{ matrix.os }}
       platform: ${{ matrix.architecture.platform }}
       runsOn: ${{ matrix.architecture.runner }}
       registry: ${{ env.REGISTRY }}

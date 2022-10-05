@@ -29,6 +29,7 @@ on:
         required: true
 jobs:
   tag-push:
+    # maybe use self hosted-runner?
     runs-on: ubuntu-latest
 
     strategy:

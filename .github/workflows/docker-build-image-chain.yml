@@ -90,6 +90,16 @@ jobs:
   #    platform: ${{ inputs.platform }}
   #    runsOn: ${{ inputs.runsOn }}
 
+  #torch:
+  #  needs: [scipy]
+  #  uses: ./.github/workflows/docker-build-test-upload.yml
+  #  with:
+  #    parentImage: scipy-notebook
+  #    image: torch-notebook
+  #    platform: ${{ inputs.platform }}
+  #    runsOn: ${{ inputs.runsOn }}
+
+
   pyspark:
     needs: [scipy]
     uses: ./.github/workflows/docker-build-test-upload.yml
