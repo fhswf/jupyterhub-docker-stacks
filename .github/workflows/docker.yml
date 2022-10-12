@@ -8,6 +8,7 @@ env:
   CUDA_IMAGE_VARIANTS: [cudnn8-runtime, runtime, cudnn8-devel, devel]
   OS_VERSIONS: [ ubuntu18.04, ubuntu20.04, ubuntu22.04 ]
   ARCHITECTURE: [ {platform: x86_64, runner: ubuntu-latest} ] # [{platform: aarch64, runner: ARM64}, ]
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 on:
   schedule:
@@ -45,6 +46,7 @@ on:
   push:
     branches:
       - main
+      - dev
     paths:
       - ".github/workflows/docker.yml"
       - ".github/workflows/docker-build-test-upload.yml"
@@ -81,7 +83,7 @@ jobs:
   build-push-cuda:
     # this will: 1. build all images, 2. create manifest
     uses: ./.github/workflows/docker-build-image-chain.yml
-    if: github.ref == 'refs/heads/main'
+    if: ${{ env.BRANCH_NAME }} == 'main'
     strategy:
       fail-fast: false
       matrix:
@@ -97,7 +99,7 @@ jobs:
       platform: ${{ matrix.architecture.platform }}
       runsOn: ${{ matrix.architecture.runner }}
       registry: ${{ env.REGISTRY }}
-
+      prefix: ${{ env.BRANCH_NAME }}
 
   build-push:
   # the same tihout cuda base images, here its just ubuntu
