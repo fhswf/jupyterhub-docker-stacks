@@ -41,6 +41,7 @@ help:
 	@grep -E '^[a-zA-Z0-9_%/-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 
+$(error This makefile is outdated, the recommended why is to use prebuild images from github)
 
 build/%: DOCKER_BUILD_ARGS?=
 build/%: ## build the latest image for a stack using the system's architecture
