@@ -61,7 +61,7 @@ jobs:
 
       - name: Create tags 🏷
         run: |
-          python3 -m tagging.tag_image --short-image-name ${{ matrix.image }} --owner ${{ inputs.owner }}
+          python3 -m tagging.apply_tags --short-image-name ${{ matrix.image }} --owner ${{ inputs.owner }}
           docker image ls -a
         shell: bash
 

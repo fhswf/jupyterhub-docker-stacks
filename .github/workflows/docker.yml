@@ -1,14 +1,20 @@
 name: Build, test and push Docker Images
 
+# This workflow starts myn builds for different image versions.
+# Please note that the indiviudal images that ave to build are specified in docker-build-image-chain.yml
+# As some image depend on other this is not possible to be done entirely via matrix builds, some stuff has to be hardcoded
+# Launch order is this_file -> docker-build-image-chain.yml -> docker-build-test-upload.yml -> docker-tag-manifest-push.yml
+
 env:
   REPOSITORY: ${{ github.repository }}
   REGISTRY: ghcr.io 
   # BASE_IMAGES: ["nvidia/cuda:11.7.1-cudnn8-devel-ubuntu18.04"]
-  CUDA_VERSIONS: [11.7.1] # [" 11.6.2", "11.5.2", "11.4.3"]
-  CUDA_IMAGE_VARIANTS: [cudnn8-runtime, runtime, cudnn8-devel, devel]
-  OS_VERSIONS: [ ubuntu18.04, ubuntu20.04, ubuntu22.04 ]
-  ARCHITECTURE: [ {platform: x86_64, runner: ubuntu-latest} ] # [{platform: aarch64, runner: ARM64}, ]
+  CUDA_VERSIONS: [11.7.1] # older versions [" 11.6.2", "11.5.2", "11.4.3"]
+  CUDA_IMAGE_VARIANTS: [devel] # alternatives [cudnn8-runtime, runtime, cudnn8-devel, devel]
+  OS_VERSIONS: [ ubuntu18.04 ] # [ ubuntu18.04, ubuntu20.04, ubuntu22.04 ]
+  ARCHITECTURE: [ {platform: x86_64, runner: ubuntu-latest} ] # this one is ot avaiable for us needs self-hosted runner: [{platform: aarch64, runner: ARM64}]
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+
 
 on:
   schedule:
@@ -22,7 +28,7 @@ on:
       - ".github/workflows/docker-build-test-upload.yml"
       - ".github/workflows/docker-merge-tags.yml"
       - ".github/workflows/docker-tag-manifest-push.yml"
-      #- ".github/workflows/docker-wiki-update.yml"
+      - ".github/workflows/docker-wiki-update.yml"
 
       # We use local composite actions to combine multiple workflow steps within one action
       # https://docs.github.com/en/actions/creating-actions/about-custom-actions#composite-actions
@@ -37,8 +43,8 @@ on:
       - "pyspark-notebook/**"
       - "r-notebook/**"
       - "scipy-notebook/**"
-      #- "tensorflow-notebook/**"
-      #- "torch-notebook/**"
+      - "tensorflow-notebook/**"
+      - "torch-notebook/**"
 
       - "tagging/**"
       - "tests/**"
@@ -52,7 +58,7 @@ on:
       - ".github/workflows/docker-build-test-upload.yml"
       - ".github/workflows/docker-merge-tags.yml"
       - ".github/workflows/docker-tag-manifest-push.yml"
-      #- ".github/workflows/docker-wiki-update.yml"
+      - ".github/workflows/docker-wiki-update.yml"
 
       - ".github/actions/create-dev-env/action.yml"
       - ".github/actions/download-manifests/action.yml"
@@ -65,8 +71,8 @@ on:
       - "pyspark-notebook/**"
       - "r-notebook/**"
       - "scipy-notebook/**"
-      #- "tensorflow-notebook/**"
-      #- "torch-notebook/**"
+      - "tensorflow-notebook/**"
+      - "torch-notebook/**"
 
       - "tagging/**"
       - "tests/**"
@@ -83,7 +89,7 @@ jobs:
   build-push-cuda:
     # this will: 1. build all images, 2. create manifest
     uses: ./.github/workflows/docker-build-image-chain.yml
-    if: ${{ env.BRANCH_NAME }} == 'main'
+    if: ${{ env.BRANCH_NAME }} == 'main' || ${{ env.BRANCH_NAME }} == 'dev'
     strategy:
       fail-fast: false
       matrix:
@@ -99,12 +105,13 @@ jobs:
       platform: ${{ matrix.architecture.platform }}
       runsOn: ${{ matrix.architecture.runner }}
       registry: ${{ env.REGISTRY }}
-      prefix: ${{ env.BRANCH_NAME }}
+      owner: ${{ github.repository }}
+      prefix: ${{ env.BRANCH_NAME }}-cuda${{ matrix.cudaVersion }}-${{ matrix.cudaVariant }}-${{ matrix.os }}
 
   build-push:
   # the same tihout cuda base images, here its just ubuntu
     uses: ./.github/workflows/docker-build-image-chain.yml
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || ${{ env.BRANCH_NAME }} == 'dev'
     strategy:
       fail-fast: false
       matrix:
@@ -118,7 +125,9 @@ jobs:
       platform: ${{ matrix.architecture.platform }}
       runsOn: ${{ matrix.architecture.runner }}
       registry: ${{ env.REGISTRY }}
-
+      owner: ${{ github.repository }}
+      prefix: ${{ env.BRANCH_NAME }}-${{ matrix.os }}
+    
   #merge-tags:
   #  secrets:
   #    DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
