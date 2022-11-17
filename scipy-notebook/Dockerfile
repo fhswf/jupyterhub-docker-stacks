@@ -54,7 +54,6 @@ RUN mamba install --quiet --yes \
     'pytables' \
     'scikit-image' \
     'scikit-learn' \
-    'scilab-kernel' \
     'scipy' \
     'seaborn' \
     'sqlalchemy' \
@@ -63,6 +62,10 @@ RUN mamba install --quiet --yes \
     'widgetsnbextension'\
     'xlrd' && \
     mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+RUN pip install scilab-kernel && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
