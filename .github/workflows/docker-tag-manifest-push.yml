@@ -17,7 +17,7 @@ on:
         type: string
         default: docker.io
       owner:
-        description: Should be equal to the repository, defaults to ${{ github.repository }}
+        description: Should be equal to the repository, defaults to github repository
         required: false
         type: string
         default: ${{ github.repository }}
