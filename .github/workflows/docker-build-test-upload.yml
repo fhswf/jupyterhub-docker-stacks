@@ -96,7 +96,7 @@ jobs:
       - name: Upload tags file 💾
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.image }}-${{tag_prefix}}-${{ inputs.platform }}-tags
+          name: ${{ inputs.image }}-${{inputs.tag_prefix}}-${{ inputs.platform }}-tags
           path: /tmp/tags/${{ inputs.platform }}-${{tag_prefix}}-${{ inputs.image }}.txt
           retention-days: 3
 
@@ -107,14 +107,14 @@ jobs:
       - name: Upload manifest file 💾
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.image }}-${{tag_prefix}}-${{ inputs.platform }}-manifest
+          name: ${{ inputs.image }}-${{inputs.tag_prefix}}-${{ inputs.platform }}-manifest
           path: /tmp/manifests/${{ inputs.platform }}-${{tag_prefix}}-${{ inputs.image }}-*.md
           retention-days: 3
 
       - name: Upload build history line 💾
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.image }}-${{tag_prefix}}-${{ inputs.platform }}-history_line
+          name: ${{ inputs.image }}-${{inputs.tag_prefix}}-${{ inputs.platform }}-history_line
           path: /tmp/hist_lines/${{ inputs.platform }}-${{tag_prefix}}-${{ inputs.image }}-*.txt
           retention-days: 3
 
