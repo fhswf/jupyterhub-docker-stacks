@@ -74,7 +74,7 @@ def write_manifest(
     owner: str,
     hist_line_dir: Path,
     manifest_dir: Path,
-    registry: str
+    registry: str,
 ) -> None:
     LOGGER.info(f"Creating manifests for image: {short_image_name}")
     taggers, manifests = get_taggers_and_manifests(short_image_name)
@@ -129,6 +129,12 @@ if __name__ == "__main__":
         required=True,
         help="registry for image",
     )
+#    arg_parser.add_argument(
+#        "--tag-prefix",
+#        required=True,
+#        help="tag-prefix for image",
+#    )
+
     args = arg_parser.parse_args()
 
     LOGGER.info(f"Current build timestamp: {BUILD_TIMESTAMP}")
