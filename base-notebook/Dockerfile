@@ -4,10 +4,10 @@
 # Ubuntu 22.04 (jammy)
 # https://hub.docker.com/_/ubuntu/?tab=tags&name=jammy
 #ARG ROOT_CONTAINER=nvidia/cuda:11.7.1-cudnn8-devel-ubuntu18.04
-ARG ROOT_CONTAINER=ubuntu18.04
+ARG ROOT_CONTAINER=ubuntu:18.04
 FROM $ROOT_CONTAINER as BASE_IMAGE_STAGE
 
-ARG ROOT_CONTAINER=ubuntu18.04
+ARG ROOT_CONTAINER=ubuntu:18.04
 ENV ROOT_CONTAINER=${ROOT_CONTAINER:-ubuntu}
 
 LABEL maintainer="FH-SWF <https://github.com/fhswf/jupyterhub-docker-stacks>, forked from Jupyter Project <jupyter@googlegroups.com>"
