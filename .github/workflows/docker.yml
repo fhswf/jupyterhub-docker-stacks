@@ -111,7 +111,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu:18.04 ] # [ ubuntu18.04, ubuntu20.04, ubuntu22.04 ]
+        os: [ "ubuntu:18.04" ] # [ ubuntu18.04, ubuntu20.04, ubuntu22.04 ]
         architecture:  [ {platform: x86_64, runner: ubuntu-latest} ] # this one is ot avaiable for us needs self-hosted runner: [{platform: aarch64, runner: ARM64}]
     secrets:
       REGISTRY_USERNAME: ${{ github.actor }}
