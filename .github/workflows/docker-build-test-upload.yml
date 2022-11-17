@@ -25,7 +25,7 @@ on:
         type: string
         default: docker.io
       owner:
-        description: Repository for uploading and tagging images, defauts to github.repository
+        description: Repository for uploading and tagging images, defauts to github repository
         required: false
         type: string
         default: ${{ github.repository }}
