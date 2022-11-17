@@ -119,7 +119,7 @@ jobs:
           retention-days: 3
 
       - name: Save image as a tar for later use 💾
-        run: docker save ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
+        run: docker save ${{ inputs.registry }}/${{ inputs.owner }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
         shell: bash
 
       - name: Upload image as artifact 💾
