@@ -87,7 +87,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # naming conversion
+        # naming convention
         # BASE_IMAGES: ["nvidia/cuda:11.7.1-cudnn8-devel-ubuntu18.04"]
         cudaVersion: [11.7.1] # older versions [" 11.6.2", "11.5.2", "11.4.3"]
         cudaVariant: [devel] # alternatives [cudnn8-runtime, runtime, cudnn8-devel, devel]

@@ -148,9 +148,7 @@ jobs:
   # push images
   images-tag-push:
     uses: ./.github/workflows/docker-tag-manifest-push.yml
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    secrets: inherit
     needs:
       [
         base,
@@ -183,9 +181,7 @@ jobs:
         ]
         
   merge-tags:
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    secrets: inherit
     needs: [images-tag-push]
     uses: ./.github/workflows/docker-merge-tags.yml
     # mssing images:
