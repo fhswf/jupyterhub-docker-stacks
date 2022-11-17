@@ -89,7 +89,7 @@ jobs:
   build-push-cuda:
     # this will: 1. build all images, 2. create manifest
     uses: ./.github/workflows/docker-build-image-chain.yml
-    if: ${{ env.BRANCH_NAME }} == 'main' || ${{ env.BRANCH_NAME }} == 'dev'
+    if: ${{ github.head_ref || github.ref_name }}  == 'main' || ${{ github.head_ref || github.ref_name }}  == 'dev'
     strategy:
       fail-fast: false
       matrix:
@@ -111,7 +111,7 @@ jobs:
   build-push:
   # the same tihout cuda base images, here its just ubuntu
     uses: ./.github/workflows/docker-build-image-chain.yml
-    if: github.ref == 'refs/heads/main' || ${{ env.BRANCH_NAME }} == 'dev'
+    if: ${{ github.head_ref || github.ref_name }}  == 'main' || ${{ github.head_ref || github.ref_name }}  == 'dev'
     strategy:
       fail-fast: false
       matrix:
