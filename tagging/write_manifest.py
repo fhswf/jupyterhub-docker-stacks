@@ -75,6 +75,7 @@ def write_manifest(
     hist_line_dir: Path,
     manifest_dir: Path,
     registry: str,
+    tag_prefix: str
 ) -> None:
     LOGGER.info(f"Creating manifests for image: {short_image_name}")
     taggers, manifests = get_taggers_and_manifests(short_image_name)
@@ -83,7 +84,7 @@ def write_manifest(
 
     file_prefix = get_platform()
     commit_hash_tag = GitHelper.commit_hash_tag()
-    filename = f"{file_prefix}-{short_image_name}-{commit_hash_tag}"
+    filename = f"{file_prefix}-{tag_prefix}-{short_image_name}-{commit_hash_tag}"
 
     with DockerRunner(image) as container:
         tags_prefix = get_platform()
@@ -129,16 +130,16 @@ if __name__ == "__main__":
         required=True,
         help="registry for image",
     )
-#    arg_parser.add_argument(
-#        "--tag-prefix",
-#        required=True,
-#        help="tag-prefix for image",
-#    )
+    arg_parser.add_argument(
+        "--tag-prefix",
+        required=True,
+        help="tag-prefix for image",
+    )
 
     args = arg_parser.parse_args()
 
     LOGGER.info(f"Current build timestamp: {BUILD_TIMESTAMP}")
 
     write_manifest(
-        args.short_image_name, args.owner, args.hist_line_dir, args.manifest_dir, args.registry
+        args.short_image_name, args.owner, args.hist_line_dir, args.manifest_dir, args.registry, args.tag_prefix
     )

@@ -96,26 +96,26 @@ jobs:
       - name: Upload tags file 💾
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.image }}-${{ inputs.platform }}-tags
-          path: /tmp/tags/${{ inputs.platform }}-${{ inputs.image }}.txt
+          name: ${{ inputs.image }}-${{tag_prefix}}-${{ inputs.platform }}-tags
+          path: /tmp/tags/${{ inputs.platform }}-${{tag_prefix}}-${{ inputs.image }}.txt
           retention-days: 3
 
       - name: Write manifest and build history file 🏷
-        run: python3 -m tagging.write_manifest --short-image-name ${{ inputs.image }} --hist-line-dir /tmp/hist_lines/ --manifest-dir /tmp/manifests/ --owner ${{ inputs.owner }} --registry ${{ inputs.registry }}
+        run: python3 -m tagging.write_manifest --short-image-name ${{ inputs.image }} --hist-line-dir /tmp/hist_lines/ --manifest-dir /tmp/manifests/ --owner ${{ inputs.owner }} --registry ${{ inputs.registry }} --tag-prefix ${{ inputs.prefix }}
         shell: bash
 
       - name: Upload manifest file 💾
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.image }}-${{ inputs.platform }}-manifest
-          path: /tmp/manifests/${{ inputs.platform }}-${{ inputs.image }}-*.md
+          name: ${{ inputs.image }}-${{tag_prefix}}-${{ inputs.platform }}-manifest
+          path: /tmp/manifests/${{ inputs.platform }}-${{tag_prefix}}-${{ inputs.image }}-*.md
           retention-days: 3
 
       - name: Upload build history line 💾
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.image }}-${{ inputs.platform }}-history_line
-          path: /tmp/hist_lines/${{ inputs.platform }}-${{ inputs.image }}-*.txt
+          name: ${{ inputs.image }}-${{tag_prefix}}-${{ inputs.platform }}-history_line
+          path: /tmp/hist_lines/${{ inputs.platform }}-${{tag_prefix}}-${{ inputs.image }}-*.txt
           retention-days: 3
 
       - name: Save image as a tar for later use 💾
