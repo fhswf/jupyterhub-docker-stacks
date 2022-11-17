@@ -9,7 +9,7 @@ env:
   REPOSITORY: ${{ github.repository }}
   REGISTRY: ghcr.io 
   # BASE_IMAGES: ["nvidia/cuda:11.7.1-cudnn8-devel-ubuntu18.04"]
-  CUDA_VERSIONS: [11.7.1] # older versions [" 11.6.2", "11.5.2", "11.4.3"]
+  CUDA_VERSIONS: "[11.7.1]" # older versions [" 11.6.2", "11.5.2", "11.4.3"]
   CUDA_IMAGE_VARIANTS: [devel] # alternatives [cudnn8-runtime, runtime, cudnn8-devel, devel]
   OS_VERSIONS: [ ubuntu18.04 ] # [ ubuntu18.04, ubuntu20.04, ubuntu22.04 ]
   ARCHITECTURE: [ {platform: x86_64, runner: ubuntu-latest} ] # this one is ot avaiable for us needs self-hosted runner: [{platform: aarch64, runner: ARM64}]
@@ -93,7 +93,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cudaVersion: ${{ env.CUDA_VERSIONS }}
+        cudaVersion: ${{ fromJSON(env.CUDA_VERSIONS) }}
         cudaVariant: ${{ env.CUDA_IMAGE_VARIANTS }}
         os: ${{ env.OS_VERSIONS }} 
         architecture: ${{ env.ARCHITECTURE }}
