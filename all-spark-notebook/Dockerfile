@@ -1,10 +1,11 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-ARG OWNER=jupyter
-ARG BASE_CONTAINER=$OWNER/pyspark-notebook
+ARG REGISTRY=ghcr.io 
+ARG OWNER=fhswf/jupyterhub-docker-stacks
+ARG BASE_CONTAINER=$REGISTRY/$OWNER/pyspark-notebook
 FROM $BASE_CONTAINER
 
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+LABEL maintainer="FH-SWF <https://github.com/fhswf/jupyterhub-docker-stacks>, forked from Jupyter Project <jupyter@googlegroups.com>"
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014

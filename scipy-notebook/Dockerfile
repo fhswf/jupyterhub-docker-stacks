@@ -5,7 +5,7 @@ ARG OWNER=fhswf/jupyterhub-docker-stacks
 ARG BASE_CONTAINER=$REGISTRY/$OWNER/minimal-notebook
 FROM $BASE_CONTAINER
 
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+LABEL maintainer="FH-SWF <https://github.com/fhswf/jupyterhub-docker-stacks>, forked from Jupyter Project <jupyter@googlegroups.com>"
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
@@ -19,6 +19,10 @@ RUN apt-get update --yes && \
     build-essential \
     # for latex labels
     cm-super \
+    pari-gp \
+    libpari-dev \
+    libgmp-dev \
+    scilab \
     dvipng \
     # for matplotlib anim
     ffmpeg && \
@@ -49,6 +53,7 @@ RUN mamba install --quiet --yes \
     'pytables' \
     'scikit-image' \
     'scikit-learn' \
+    'scilab-kernel' \
     'scipy' \
     'seaborn' \
     'sqlalchemy' \
