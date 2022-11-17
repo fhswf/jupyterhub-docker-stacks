@@ -204,8 +204,8 @@ jobs:
           "torch"
         ]
 
-  wiki-update:
-    permissions:
-      contents: write
-    needs: [x86_64-images-tag-push]
-    uses: ./.github/workflows/docker-wiki-update.yml
+#  wiki-update:
+#    permissions:
+#      contents: write
+#    needs: [x86_64-images-tag-push]
+#    uses: ./.github/workflows/docker-wiki-update.yml
