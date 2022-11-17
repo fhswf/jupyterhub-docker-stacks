@@ -85,12 +85,12 @@ jobs:
         shell: bash
 
       - name: Run tests ✅
-        run: python3 -m tests.run_tests --short-image-name ${{ inputs.image }} --owner ${{ inputs.owner }}
+        run: python3 -m tests.run_tests --short-image-name ${{ inputs.image }} --owner ${{ inputs.owner }} --registry ${{ inputs.registry }}
         shell: bash
 
       - name: Write tags file 🏷
         run: |
-          python3 -m tagging.write_tags_file --short-image-name ${{ inputs.image }} --tags-dir /tmp/tags/ --owner ${{ inputs.owner }} --tag-prefix ${{ inputs.prefix }}
+          python3 -m tagging.write_tags_file --short-image-name ${{ inputs.image }} --tags-dir /tmp/tags/ --owner ${{ inputs.owner }} --registry ${{ inputs.registry }} --tag-prefix ${{ inputs.prefix }}
         shell: bash
 
       - name: Upload tags file 💾

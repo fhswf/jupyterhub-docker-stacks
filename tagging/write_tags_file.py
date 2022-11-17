@@ -18,18 +18,19 @@ def write_tags_file(
     tag_prefix: str, 
     owner: str,
     tags_dir: Path,
+    registry: str
 ) -> None:
     """
-    Writes tags file for the image <owner>/<short_image_name>:latest
+    Writes tags file for the image <registry>/<owner>/<short_image_name>:latest
     """
     LOGGER.info(f"Tagging image: {short_image_name}")
     taggers, _ = get_taggers_and_manifests(short_image_name)
 
-    image = f"{owner}/{short_image_name}:latest"
+    image = f"{registry}/{owner}/{short_image_name}:latest"
     platform = get_platform()
     filename = f"{platform}-{tag_prefix}-{short_image_name}.txt"
 
-    tags = [f"{owner}/{short_image_name}:{platform}-{tag_prefix}-latest"]
+    tags = [f"{registry}/{owner}/{short_image_name}:{platform}-{tag_prefix}-latest"]
     with DockerRunner(image) as container:
         for tagger in taggers:
             tagger_name = tagger.__class__.__name__
@@ -37,7 +38,7 @@ def write_tags_file(
             LOGGER.info(
                 f"Calculated tag, tagger_name: {tagger_name} tag_value: {tag_value}"
             )
-            tags.append(f"{owner}/{short_image_name}:{platform}-{tag_prefix}-{tag_value}")
+            tags.append(f"{registry}/{owner}/{short_image_name}:{platform}-{tag_prefix}-{tag_value}")
     tags_dir.mkdir(parents=True, exist_ok=True)
     (tags_dir / filename).write_text("\n".join(tags))
 
@@ -67,11 +68,11 @@ if __name__ == "__main__":
         required=True,
         help="Owner of the image",
     )
-    #arg_parser.add_argument(
-    #    "--repository",
-    #    required=True,
-    #    help="Repository for image to apply tags for",
-    #)
+    arg_parser.add_argument(
+        "--registry",
+        required=True,
+        help="registry for image to apply tags for",
+    )
     args = arg_parser.parse_args()
 
-    write_tags_file(args.short_image_name, args.tag_prefix, args.owner, args.tags_dir)
+    write_tags_file(args.short_image_name, args.tag_prefix, args.owner, args.tags_dir, args.registry)

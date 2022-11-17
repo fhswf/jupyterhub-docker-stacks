@@ -27,12 +27,13 @@ def write_build_history_line(
     hist_line_dir: Path,
     filename: str,
     all_tags: list[str],
+    registry: str
 ) -> None:
     LOGGER.info("Appending build history line")
 
     date_column = f"`{BUILD_TIMESTAMP}`"
     image_column = MARKDOWN_LINE_BREAK.join(
-        f"`{owner}/{short_image_name}:{tag_value}`" for tag_value in all_tags
+        f"`{registry}/{owner}/{short_image_name}:{tag_value}`" for tag_value in all_tags
     )
     commit_hash = GitHelper.commit_hash()
     links_column = MARKDOWN_LINE_BREAK.join(
@@ -54,12 +55,13 @@ def write_manifest_file(
     filename: str,
     manifests: list[ManifestInterface],
     container: Container,
+    registry: str
 ) -> None:
     manifest_names = [manifest.__class__.__name__ for manifest in manifests]
     LOGGER.info(f"Using manifests: {manifest_names}")
 
     markdown_pieces = [
-        ManifestHeader.create_header(short_image_name, owner, BUILD_TIMESTAMP)
+        ManifestHeader.create_header(short_image_name, owner, BUILD_TIMESTAMP, registry)
     ] + [manifest.markdown_piece(container) for manifest in manifests]
     markdown_content = "\n\n".join(markdown_pieces) + "\n"
 
@@ -72,11 +74,12 @@ def write_manifest(
     owner: str,
     hist_line_dir: Path,
     manifest_dir: Path,
+    registry: str
 ) -> None:
     LOGGER.info(f"Creating manifests for image: {short_image_name}")
     taggers, manifests = get_taggers_and_manifests(short_image_name)
 
-    image = f"{owner}/{short_image_name}:latest"
+    image = f"{registry}/{owner}/{short_image_name}:latest"
 
     file_prefix = get_platform()
     commit_hash_tag = GitHelper.commit_hash_tag()
@@ -88,10 +91,10 @@ def write_manifest(
             tags_prefix + "-" + tagger.tag_value(container) for tagger in taggers
         ]
         write_build_history_line(
-            short_image_name, owner, hist_line_dir, filename, all_tags
+            short_image_name, owner, hist_line_dir, filename, all_tags, registry
         )
         write_manifest_file(
-            short_image_name, owner, manifest_dir, filename, manifests, container
+            short_image_name, owner, manifest_dir, filename, manifests, container, registry
         )
 
 
@@ -121,10 +124,15 @@ if __name__ == "__main__":
         required=True,
         help="Owner of the image",
     )
+    arg_parser.add_argument(
+        "--registry",
+        required=True,
+        help="registry for image",
+    )
     args = arg_parser.parse_args()
 
     LOGGER.info(f"Current build timestamp: {BUILD_TIMESTAMP}")
 
     write_manifest(
-        args.short_image_name, args.owner, args.hist_line_dir, args.manifest_dir
+        args.short_image_name, args.owner, args.hist_line_dir, args.manifest_dir, args.registry
     )
