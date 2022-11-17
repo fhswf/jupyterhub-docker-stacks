@@ -100,9 +100,9 @@ jobs:
       baseImage: nvidia/cuda:${{ matrix.cudaVersion }}-${{ matrix.cudaVariant }}-${{ matrix.os }}"
       platform: ${{ matrix.architecture.platform }}
       runsOn: ${{ matrix.architecture.runner }}
-      registry: ${{ env.REGISTRY }}
+      registry: ghcr.io
       owner: ${{ github.repository }}
-      prefix: ${{ env.BRANCH_NAME }}-cuda${{ matrix.cudaVersion }}-${{ matrix.cudaVariant }}-${{ matrix.os }}
+      prefix: ${{ github.head_ref || github.ref_name }}-cuda${{ matrix.cudaVersion }}-${{ matrix.cudaVariant }}-${{ matrix.os }}
 
   build-push:
   # the same tihout cuda base images, here its just ubuntu
@@ -120,9 +120,9 @@ jobs:
       baseImage: ${{ matrix.os }}
       platform: ${{ matrix.architecture.platform }}
       runsOn: ${{ matrix.architecture.runner }}
-      registry: ${{ env.REGISTRY }}
+      registry: ghcr.io
       owner: ${{ github.repository }}
-      prefix: ${{ env.BRANCH_NAME }}-${{ matrix.os }}
+      prefix: ${{ github.head_ref || github.ref_name }}-${{ matrix.os }}
     
   #merge-tags:
   #  secrets:
