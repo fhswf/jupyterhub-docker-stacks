@@ -5,7 +5,9 @@ on:
     inputs:
       parentImage:
         description: Parent image name
-        required: true
+        type: string
+      rootImage:
+        description: Root image, only used for based container
         type: string
       image:
         description: Image name
@@ -25,7 +27,7 @@ on:
         type: string
         default: docker.io
       owner:
-        description: Repository for uploading and tagging images, defauts to github repository
+        description: Repository for uploading and tagging images, defauts to github.repository
         required: false
         type: string
         default: ${{ github.repository }}
@@ -64,7 +66,17 @@ jobs:
           image: ${{ inputs.parentImage }}
           platform: ${{ inputs.platform }}
 
+      - name: Build image for base 🛠
+        if: ${{ inputs.rootImage != '' }}
+        run: docker build --rm --force-rm --build-arg ROOT_CONTAINER=${{ inputs.rootImage }} --tag ${{ inputs.registry }}/${{ inputs.owner }}/${{ inputs.image }} ${{ inputs.image }}/
+        env:
+          DOCKER_BUILDKIT: 1
+          # Full logs for CI build
+          BUILDKIT_PROGRESS: plain
+        shell: bash 
+
       - name: Build image 🛠
+        if: ${{ inputs.rootImage == '' }}
         run: docker build --rm --force-rm --tag ${{ inputs.registry }}/${{ inputs.owner }}/${{ inputs.image }} ${{ inputs.image }}/
         env:
           DOCKER_BUILDKIT: 1

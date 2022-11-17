@@ -2,7 +2,8 @@
 # Distributed under the terms of the Modified BSD License.
 ARG REGISTRY=ghcr.io 
 ARG OWNER=fhswf/jupyterhub-docker-stacks
-ARG BASE_CONTAINER=$REGISTRY/$OWNER/scipy-notebook
+ARG PARENT=scipy-notebook
+ARG BASE_CONTAINER=$REGISTRY/$OWNER/$PARENT
 FROM $BASE_CONTAINER
 
 

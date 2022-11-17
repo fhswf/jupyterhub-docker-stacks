@@ -41,7 +41,7 @@ jobs:
     uses: ./.github/workflows/docker-build-test-upload.yml
     if: 
     with:
-      parentImage: ${{ inputs.baseImage }}
+      rootImage: ${{ inputs.baseImage }}
       image: base-notebook
       platform: ${{ inputs.platform }}
       runsOn: ${{ inputs.runsOn }}
