@@ -16,6 +16,7 @@ ALL_IMAGES = {
     "datascience-notebook": "scipy-notebook",
     "pyspark-notebook": "scipy-notebook",
     "all-spark-notebook": "pyspark-notebook",
+    "torch-notebook": "scipy-notebook"
 }
 
 
