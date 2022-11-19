@@ -135,6 +135,9 @@ jobs:
         run: docker save ${{ inputs.registry }}/${{ inputs.owner }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}.tar
         shell: bash
 
+      - name: Log disk space 
+        run: df -h
+
       - name: Upload image as artifact 💾
         uses: actions/upload-artifact@v3
         with:

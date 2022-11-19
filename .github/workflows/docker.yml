@@ -92,7 +92,7 @@ jobs:
         cudaVersion: [11.7.1] # older versions [" 11.6.2", "11.5.2", "11.4.3"]
         cudaVariant: [devel] # alternatives [cudnn8-runtime, runtime, cudnn8-devel, devel]
         os: [ ubuntu18.04 ] # [ ubuntu18.04, ubuntu20.04, ubuntu22.04 ]
-        architecture:  [ {platform: x86_64, runner: ubuntu-latest} ] # this one is ot avaiable for us needs self-hosted runner: [{platform: aarch64, runner: ARM64}]
+        architecture:  [ {platform: x86_64, runner: ubuntu-latest} ]
     secrets:
       REGISTRY_USERNAME: ${{ github.actor }}
       REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -113,7 +113,7 @@ jobs:
       matrix:
         osBase: [ "ubuntu" ] # [ ubuntu18.04, ubuntu20.04, ubuntu22.04 ]
         osVersion: [ "18.04" ]
-        architecture:  [ {platform: x86_64, runner: ubuntu-latest} ] # this one is ot avaiable for us needs self-hosted runner: [{platform: aarch64, runner: ARM64}]
+        architecture:  [ {platform: x86_64, runner: ubuntu-latest} ] 
     secrets:
       REGISTRY_USERNAME: ${{ github.actor }}
       REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,6 +125,10 @@ jobs:
       owner: ${{ github.repository }}
       prefix: ${{ github.head_ref || github.ref_name }}-${{ matrix.osBase }}${{matrix.osVersion}}
     
+#### AS OF THIS TIME WE DONT PROVIDE MULTIPLATTFORM IMAGES ###
+# if needed this architecture could also be created, but most likely not merged, due to limited storage space for cloud runners 
+# we need slef hosted runners for this:    architecture: [{platform: aarch64, runner: ARM64}]
+
   #merge-tags:
   #  secrets:
   #    DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
