@@ -118,7 +118,7 @@ jobs:
       REGISTRY_USERNAME: ${{ github.actor }}
       REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
-      baseImage: ${{ matrix.os }}:${{matrix.osVersion}}
+      baseImage: ${{ matrix.osBase }}:${{matrix.osVersion}}
       platform: ${{ matrix.architecture.platform }}
       runsOn: ${{ matrix.architecture.runner }}
       registry: ghcr.io
