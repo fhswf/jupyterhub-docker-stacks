@@ -105,8 +105,8 @@ jobs:
       - name: Upload tags file 💾
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.image }}-${{inputs.tag_prefix}}-${{ inputs.platform }}-tags
-          path: /tmp/tags/${{ inputs.platform }}-${{inputs.tag_prefix}}-${{ inputs.image }}.txt
+          name: ${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}-tags
+          path: /tmp/tags/${{ inputs.platform }}-${{inputs.prefix}}-${{ inputs.image }}.txt
           retention-days: 3
 
       - name: Write manifest and build history file 🏷
@@ -116,16 +116,16 @@ jobs:
       - name: Upload manifest file 💾
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.image }}-${{inputs.tag_prefix}}-${{ inputs.platform }}-manifest
-          path: /tmp/manifests/${{ inputs.platform }}-${{inputs.tag_prefix}}-${{ inputs.image }}-*.md
+          name: ${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}-manifest
+          path: /tmp/manifests/${{ inputs.platform }}-${{inputs.prefix}}-${{ inputs.image }}-*.md
           retention-days: 3
 
       - name: Upload build history line 💾
       
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.image }}-${{inputs.tag_prefix}}-${{ inputs.platform }}-history_line
-          path: /tmp/hist_lines/${{ inputs.platform }}-${{inputs.tag_prefix}}-${{ inputs.image }}-*.txt
+          name: ${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}-history_line
+          path: /tmp/hist_lines/${{ inputs.platform }}-${{inputs.prefix}}-${{ inputs.image }}-*.txt
           retention-days: 3
 
       - name: Log disk space 
