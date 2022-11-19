@@ -180,25 +180,25 @@ jobs:
           "torch"
         ]
         
-  merge-tags:
-    secrets: inherit
-    needs: [images-tag-push]
-    uses: ./.github/workflows/docker-merge-tags.yml
-    # mssing images:
-          #"r-notebook",
-          #"tensorflow-notebook",
-          #"datascience-notebook",
-          #"pyspark-notebook",
-          #"all-spark-notebook",
-    with:
-      images: >-
-        [
-          "base-notebook",
-          "minimal-notebook",
-          "scipy-notebook",
-          "tensorflow",
-          "torch"
-        ]
+#  merge-tags:
+#    secrets: inherit
+#    needs: [images-tag-push]
+#    uses: ./.github/workflows/docker-merge-tags.yml
+#    # mssing images:
+#          #"r-notebook",
+#          #"tensorflow-notebook",
+#          #"datascience-notebook",
+#          #"pyspark-notebook",
+#          #"all-spark-notebook",
+#    with:
+#      images: >-
+#        [
+#          "base-notebook",
+#          "minimal-notebook",
+#          "scipy-notebook",
+#          "tensorflow",
+#          "torch"
+#        ]
 
 #  wiki-update:
 #    permissions:
