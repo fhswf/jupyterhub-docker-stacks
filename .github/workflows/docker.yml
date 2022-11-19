@@ -122,7 +122,7 @@ jobs:
       runsOn: ${{ matrix.architecture.runner }}
       registry: ghcr.io
       owner: ${{ github.repository }}
-      prefix: ${{ github.head_ref || github.ref_name }}-${{ matrix.os }}
+      prefix: ${{ github.head_ref || github.ref_name }}-${{ matrix.os//:/ }}
     
   #merge-tags:
   #  secrets:
