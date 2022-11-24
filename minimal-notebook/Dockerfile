@@ -47,13 +47,14 @@ RUN apt-get update --yes && \
 # Create alternative for nano -> nano-tiny
 RUN update-alternatives --install /usr/bin/nano nano /bin/nano-tiny 10
 
+
 # set LD_path for cuda versions as it is needed by some libraries, 
 #  does no harm when cuda it self is not installed
 ENV LD_LIBRARY_PATH=${CONDA_DIR}/lib/:${LD_LIBRARY_PATH}
-RUN echo LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" >> /etc/environment 
+RUN if [[ ${ROOT_CONTAINER:7:11} == cuda* ]] ; then  echo LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" >> /etc/environment ; else  echo "skip LD_LIBRARY_PATH" ; fi
 #  same for CPATH (used for compilation)
 ENV CPATH=$CONDA_DIR/include:$CPATH
-RUN echo CPATH="${CPATH}" >> /etc/environment
+RUN if [[ ${ROOT_CONTAINER:7:11} == cuda* ]] ; then  echo CPATH="${CPATH}" >> /etc/environment ; else  echo "skip CPATH" ; fi
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER ${NB_UID}
