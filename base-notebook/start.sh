@@ -117,7 +117,6 @@ if [ "$(id -u)" == 0 ] ; then
             fi
             _log "dir contents of jovyan home, attemting to copy"
             ls -la /home/jovyan/
-            tree /home/jovyan/
             if cp -a /home/jovyan/. "/home/${NB_USER}/"; then
                 _log "Success!"
             else
