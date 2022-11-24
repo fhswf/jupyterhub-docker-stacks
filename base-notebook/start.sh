@@ -115,6 +115,9 @@ if [ "$(id -u)" == 0 ] ; then
             else
                 _log "mkdir /home/${NB_USER} failed"
             fi
+            _log "dir contents of jovyan home, attemting to copy"
+            ls -la /home/jovyan/
+            tree /home/jovyan/
             if cp -a /home/jovyan/. "/home/${NB_USER}/"; then
                 _log "Success!"
             else

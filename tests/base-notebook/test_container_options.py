@@ -116,7 +116,7 @@ def test_nb_user_change(container: TrackedContainer) -> None:
     LOGGER.info(f"Home folders look like this {cmdls_out}")
 
     LOGGER.info(f"Waiting for container startup")
-    time.sleep(15)
+    time.sleep(120)
     logs = running_container.logs().decode("utf-8")
     LOGGER.info(f"Container logs {logs}")
 
