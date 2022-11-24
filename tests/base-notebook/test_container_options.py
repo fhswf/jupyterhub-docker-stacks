@@ -110,6 +110,10 @@ def test_nb_user_change(container: TrackedContainer) -> None:
     assert output == expected_output, f"Bad user {output}, expected {expected_output}"
 
     LOGGER.info(f"Checking if {nb_user} owns his home folder ...")
+    cmdls = f'ls -la /home'
+    cmdls_result = running_container.exec_run(cmdls, workdir=f"/home/{nb_user}")
+    cmdls_out = cmdls_result.output.decode("utf-8").strip("\n")
+    LOGGER.info(f"Home folders look like this {cmdls_out}")
     command = f'stat -c "%U %G" /home/{nb_user}/'
     expected_output = f"{nb_user} users"
     cmd = running_container.exec_run(command, workdir=f"/home/{nb_user}")

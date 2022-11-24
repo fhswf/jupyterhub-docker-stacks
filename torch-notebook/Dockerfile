@@ -29,14 +29,12 @@ RUN apt-get update && \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-USER $NB_UID
+USER ${NB_UID}
 
 # instal torch with or without cuda dependen on the base image used
 # TODO with ${ROOT_CONTAINER:7:11} we can read out the cuda version and use it for the repo version
 #  the problem: torch takes a while to get the latest updates and is most liky one minor version behind
 RUN if [[ ${ROOT_CONTAINER:7:11} == cuda* ]] ; then  pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116 ; else  pip install torch torchvision torchaudio ; fi
-
-USER $NB_UID
 
 RUN mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
