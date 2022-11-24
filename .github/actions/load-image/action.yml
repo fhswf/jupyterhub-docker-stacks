@@ -10,21 +10,25 @@ inputs:
     description: Image platform
     required: true
     type: string
+  prefix:
+    description: Extra Tag for image, name will be image-prefix-platform
+    type: string
 
+# TODO ad prefix to load image name
 runs:
   using: composite
   steps:
     - name: Download built image 📥
       uses: actions/download-artifact@v3
       with:
-        name: ${{ inputs.image }}-${{ inputs.platform }}
+        name: ${{ inputs.image }}-${{ inputs.prefix }}-${{ inputs.platform }}
         path: /tmp/
     - name: Load downloaded image to docker 📥
       run: |
-        docker load --input /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
+        docker load --input /tmp/${{ inputs.image }}-${{ inputs.prefix }}-${{ inputs.platform }}.tar
         docker image ls -a
       shell: bash
     - name: Delete the file 🗑️
-      run: rm -f /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
+      run: rm -f /tmp/${{ inputs.image }}-${{ inputs.prefix }}-${{ inputs.platform }}.tar
       shell: bash
       if: always()

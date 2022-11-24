@@ -21,6 +21,14 @@ on:
         required: false
         type: string
         default: ${{ github.repository }}
+      prefix:
+        description: Tag prefix for extra versioning
+        required: true
+        type: string
+      runsOn:
+        description: GitHub Actions Runner image
+        required: true
+        type: string
 
     secrets:
       REGISTRY_USERNAME:
@@ -29,8 +37,7 @@ on:
         required: true
 jobs:
   tag-push:
-    # maybe use self hosted-runner?
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runsOn }}
 
     strategy:
       matrix:
@@ -39,6 +46,7 @@ jobs:
     steps:
       - name: Checkout Repo ⚡️
         uses: actions/checkout@v3
+        
       - name: Create dev environment 📦
         uses: ./.github/actions/create-dev-env
         with:

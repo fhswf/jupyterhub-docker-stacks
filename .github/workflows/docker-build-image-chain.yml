@@ -163,6 +163,10 @@ jobs:
       ]
     with:
       platform: ${{ inputs.platform }}
+      runsOn: ${{ inputs.runsOn }}
+      registry: ${{ inputs.registry }}
+      owner: ${{ inputs.owner }}
+      prefix: ${{ inputs.prefix }}
       # https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations
       # The strategy property is not supported in any job that calls a reusable workflow
       # Using the workaround: https://github.community/t/reusable-workflow-with-strategy-matrix/205676/2

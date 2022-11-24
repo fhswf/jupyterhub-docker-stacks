@@ -68,11 +68,12 @@ jobs:
         with:
           image: ${{ inputs.parentImage }}
           platform: ${{ inputs.platform }}
+          prefix: ${{ inputs.prefix }}
       
       - name: Log disk space 
         run: df -h
 
-      - name: Build image for base 🛠
+      - name: Conditional Build image for base 🛠
         if: ${{ inputs.rootImage != '' }}
         run: docker build --rm --force-rm --build-arg ROOT_CONTAINER=${{ inputs.rootImage }} --tag ${{ inputs.registry }}/${{ inputs.owner }}/${{ inputs.image }} ${{ inputs.image }}/
         env:
