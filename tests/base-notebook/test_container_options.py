@@ -114,6 +114,10 @@ def test_nb_user_change(container: TrackedContainer) -> None:
     cmdls_result = running_container.exec_run(cmdls, workdir=f"/home/{nb_user}")
     cmdls_out = cmdls_result.output.decode("utf-8").strip("\n")
     LOGGER.info(f"Home folders look like this {cmdls_out}")
+
+    logs = running_container.logs().decode("utf-8")
+    LOGGER.info(f"Container logs {logs}")
+
     command = f'stat -c "%U %G" /home/{nb_user}/'
     expected_output = f"{nb_user} users"
     cmd = running_container.exec_run(command, workdir=f"/home/{nb_user}")
@@ -276,7 +280,7 @@ def test_container_not_delete_bind_mount(
     p.write_text("some-content")
 
     container.run_and_wait(
-        timeout=15,
+        timeout=120,
         tty=True,
         user="root",
         working_dir="/home/",
