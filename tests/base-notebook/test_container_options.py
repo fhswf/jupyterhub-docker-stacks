@@ -71,7 +71,7 @@ def test_uid_change(container: TrackedContainer) -> None:
 def test_gid_change(container: TrackedContainer) -> None:
     """Container should change the GID of the default user."""
     logs = container.run_and_wait(
-        timeout=10,
+        timeout=20,
         tty=True,
         user="root",
         environment=["NB_GID=110"],
@@ -176,7 +176,7 @@ def test_chown_home(container: TrackedContainer) -> None:
 def test_sudo(container: TrackedContainer) -> None:
     """Container should grant passwordless sudo to the default user."""
     logs = container.run_and_wait(
-        timeout=10,
+        timeout=20,
         tty=True,
         user="root",
         environment=["GRANT_SUDO=yes"],
@@ -188,7 +188,7 @@ def test_sudo(container: TrackedContainer) -> None:
 def test_sudo_path(container: TrackedContainer) -> None:
     """Container should include /opt/conda/bin in the sudo secure_path."""
     logs = container.run_and_wait(
-        timeout=10,
+        timeout=20,
         tty=True,
         user="root",
         environment=["GRANT_SUDO=yes"],
@@ -200,7 +200,7 @@ def test_sudo_path(container: TrackedContainer) -> None:
 def test_sudo_path_without_grant(container: TrackedContainer) -> None:
     """Container should include /opt/conda/bin in the sudo secure_path."""
     logs = container.run_and_wait(
-        timeout=10,
+        timeout=20,
         tty=True,
         user="root",
         command=["start.sh", "which", "jupyter"],
@@ -214,7 +214,7 @@ def test_group_add(container: TrackedContainer) -> None:
     additionally verify that setting gid=0 is suggested in a warning.
     """
     logs = container.run_and_wait(
-        timeout=5,
+        timeout=15,
         no_warnings=False,
         user="1010:1010",
         group_add=["users"],  # Ensures write access to /home/jovyan
@@ -233,7 +233,7 @@ def test_set_uid(container: TrackedContainer) -> None:
     write access.
     """
     logs = container.run_and_wait(
-        timeout=5,
+        timeout=15,
         no_warnings=False,
         user="1010",
         command=["start.sh", "id"],
@@ -247,7 +247,7 @@ def test_set_uid(container: TrackedContainer) -> None:
 def test_set_uid_and_nb_user(container: TrackedContainer) -> None:
     """Container should run with the specified uid and NB_USER."""
     logs = container.run_and_wait(
-        timeout=5,
+        timeout=15,
         no_warnings=False,
         user="1010",
         environment=["NB_USER=kitten"],
@@ -272,7 +272,7 @@ def test_container_not_delete_bind_mount(
     p.write_text("some-content")
 
     container.run_and_wait(
-        timeout=5,
+        timeout=15,
         tty=True,
         user="root",
         working_dir="/home/",
@@ -295,7 +295,7 @@ def test_jupyter_env_vars_to_unset_as_root(
     should be unset in the final environment."""
     root_args = {"user": "root"} if enable_root else {}
     logs = container.run_and_wait(
-        timeout=10,
+        timeout=20,
         tty=True,
         environment=[
             "JUPYTER_ENV_VARS_TO_UNSET=SECRET_ANIMAL,UNUSED_ENV,SECRET_FRUIT",
@@ -325,7 +325,7 @@ def test_secure_path(container: TrackedContainer, tmp_path: pathlib.Path) -> Non
     p.chmod(0o755)
 
     logs = container.run_and_wait(
-        timeout=5,
+        timeout=15,
         tty=True,
         user="root",
         volumes={p: {"bind": "/usr/bin/python", "mode": "ro"}},
