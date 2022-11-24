@@ -110,7 +110,11 @@ if [ "$(id -u)" == 0 ] ; then
     if [[ "${NB_USER}" != "jovyan" ]]; then
         if [[ ! -e "/home/${NB_USER}" ]]; then
             _log "Attempting to copy /home/jovyan to /home/${NB_USER}..."
-            mkdir "/home/${NB_USER}"
+            if mkdir "/home/${NB_USER}"; then
+                _log "mkdir /home/${NB_USER} done"
+            else
+                _log "mkdir /home/${NB_USER} failed"
+            fi
             if cp -a /home/jovyan/. "/home/${NB_USER}/"; then
                 _log "Success!"
             else
@@ -137,7 +141,11 @@ if [ "$(id -u)" == 0 ] ; then
     if [[ "${CHOWN_HOME}" == "1" || "${CHOWN_HOME}" == "yes" ]]; then
         _log "Ensuring /home/${NB_USER} is owned by ${NB_UID}:${NB_GID} ${CHOWN_HOME_OPTS:+(chown options: ${CHOWN_HOME_OPTS})}"
         # shellcheck disable=SC2086
-        chown ${CHOWN_HOME_OPTS} "${NB_UID}:${NB_GID}" "/home/${NB_USER}"
+        if chown ${CHOWN_HOME_OPTS} "${NB_UID}:${NB_GID}" "/home/${NB_USER}"; then
+            _log "chown /home/${NB_USER} okay"
+        else
+            _log "chown /home/${NB_USER} failed"
+        fi
     fi
     if [ -n "${CHOWN_EXTRA}" ]; then
         for extra_dir in $(echo "${CHOWN_EXTRA}" | tr ',' ' '); do
