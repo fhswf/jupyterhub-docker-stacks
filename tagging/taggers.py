@@ -105,6 +105,11 @@ class TensorflowVersionTagger(TaggerInterface):
     def tag_value(container: Container) -> str:
         return "tensorflow-" + _get_pip_package_version(container, "tensorflow")
 
+class TorchVersionTagger(TaggerInterface):
+    @staticmethod
+    def tag_value(container: Container) -> str:
+        return "torch-" + _get_pip_package_version(container, "torch")
+
 
 class JuliaVersionTagger(TaggerInterface):
     @staticmethod
