@@ -16,8 +16,3 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # TODO with ${ROOT_CONTAINER:7:11} we can read out the cuda version and use it for the repo version
 #  the problem: torch takes a while to get the latest updates and is most liky one minor version behind
 RUN if [[ ${ROOT_CONTAINER:7:11} == cuda* ]] ; then  pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116 ; else  pip install torch torchvision torchaudio ; fi
-
-RUN mamba clean --all -f -y && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
-
