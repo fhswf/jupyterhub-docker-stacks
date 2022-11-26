@@ -38,8 +38,6 @@ RUN apt-get update --yes && \
     tzdata \
     gfortran \
     gcc \
-    htop \
-    wget \
     iputils-ping \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
