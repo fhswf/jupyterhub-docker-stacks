@@ -26,8 +26,8 @@ RUN apt-get update --yes && \
     scilab \
     dvipng \
     # for matplotlib anim
-    ffmpeg && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    ffmpeg \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER ${NB_UID}
 
