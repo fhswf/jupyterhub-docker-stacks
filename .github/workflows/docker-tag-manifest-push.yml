@@ -66,6 +66,7 @@ jobs:
         with:
           image: ${{ matrix.image }}
           platform: ${{ inputs.platform }}
+          prefix: ${{ inputs.prefix }}
 
       - name: Create tags 🏷
         run: |
