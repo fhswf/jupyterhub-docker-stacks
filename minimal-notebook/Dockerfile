@@ -28,14 +28,12 @@ RUN apt-get update --yes && \
     # less is needed to run help in R
     # see: https://github.com/jupyter/docker-stacks/issues/1588
     less \
-    # nbconvert dependencies
-    # https://nbconvert.readthedocs.io/en/latest/install.html#installing-tex
-    texlive-xetex \
-    texlive-fonts-recommended \
-    texlive-plain-generic && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* \
+    ## nbconvert dependencies
+    ## https://nbconvert.readthedocs.io/en/latest/install.html#installing-tex
+    #texlive-xetex \
+    #texlive-fonts-recommended \
+    #texlive-plain-generic && \
     fonts-dejavu \
-    tzdata \
     gfortran \
     gcc \
     iputils-ping \
