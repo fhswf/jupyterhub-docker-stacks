@@ -1,0 +1,24 @@
+name: remove Docker image
+description: remove image from docker
+
+inputs:
+  image:
+    description: Image name
+    required: true
+    type: string
+  platform:
+    description: Image platform
+    required: true
+    type: string
+  prefix:
+    description: Extra Tag for image, name will be image-prefix-platform
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: prune images
+      run: |
+        docker image prune
+        docker image ls -a
+      shell: bash

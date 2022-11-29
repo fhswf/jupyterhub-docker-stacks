@@ -132,6 +132,14 @@ jobs:
       - name: Log disk space 
         run: df -h
 
+      - name: remove parent image from Docker to free up disk space
+        if: ${{ inputs.parentImage != '' }}
+        uses: ./.github/actions/remove-image
+        with:
+          image: ${{ inputs.parentImage }}
+          platform: ${{ inputs.platform }}
+          prefix: ${{ inputs.prefix }}
+
       - name: Save image as a tar for later use 💾
         run: docker save ${{ inputs.registry }}/${{ inputs.owner }}/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}.tar
         shell: bash

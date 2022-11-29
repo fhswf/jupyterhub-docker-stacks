@@ -14,7 +14,6 @@ inputs:
     description: Extra Tag for image, name will be image-prefix-platform
     type: string
 
-# TODO ad prefix to load image name
 runs:
   using: composite
   steps:
