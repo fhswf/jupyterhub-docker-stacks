@@ -15,4 +15,4 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # instal torch with or without cuda dependen on the base image used
 # TODO with ${ROOT_CONTAINER:7:11} we can read out the cuda version and use it for the repo version
 #  the problem: torch takes a while to get the latest updates and is most liky one minor version behind
-RUN if [[ ${ROOT_CONTAINER:7:11} == cuda* ]] ; then  pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116 && pip cache remove * ; else  pip install torch torchvision torchaudio && pip cache remove * ; fi
+RUN if [[ ${ROOT_CONTAINER:7:11} == cuda* ]] ; then  pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116 && pip cache purge ; else  pip install torch torchvision torchaudio && pip cache purge ; fi

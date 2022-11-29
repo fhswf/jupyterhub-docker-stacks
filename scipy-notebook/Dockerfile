@@ -65,7 +65,7 @@ RUN mamba install --quiet --yes \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-RUN pip install scilab-kernel && pip cache remove *
+RUN pip install scilab-kernel && pip cache purge
 
 # Install facets which does not have a pip or conda package at the moment
 WORKDIR /tmp
