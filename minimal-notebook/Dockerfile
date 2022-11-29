@@ -30,9 +30,9 @@ RUN apt-get update --yes && \
     less \
     ## nbconvert dependencies
     ## https://nbconvert.readthedocs.io/en/latest/install.html#installing-tex
-    #texlive-xetex \
-    #texlive-fonts-recommended \
-    #texlive-plain-generic && \
+    texlive-xetex \
+    texlive-fonts-recommended \
+    texlive-plain-generic && \
     fonts-dejavu \
     gfortran \
     gcc \

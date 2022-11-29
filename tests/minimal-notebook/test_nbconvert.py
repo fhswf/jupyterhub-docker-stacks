@@ -15,9 +15,9 @@ THIS_DIR = Path(__file__).parent.resolve()
 @pytest.mark.parametrize(
     "test_file, output_format",
     [
-        #("notebook_math", "pdf"),
+        ("notebook_math", "pdf"),
         ("notebook_math", "html"),
-        #("notebook_svg", "pdf"),
+        ("notebook_svg", "pdf"),
         ("notebook_svg", "html"),
     ],
 )
