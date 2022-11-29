@@ -180,8 +180,8 @@ jobs:
           "base-notebook",
           "minimal-notebook",
           "scipy-notebook",
-          "tensorflow",
-          "torch"
+          "tensorflow-notebook",
+          "torch-notebook"
         ]
         
 #  merge-tags:
@@ -200,8 +200,8 @@ jobs:
 #          "base-notebook",
 #          "minimal-notebook",
 #          "scipy-notebook",
-#          "tensorflow",
-#          "torch"
+#          "tensorflow-notebook",
+#          "torch-notebook"
 #        ]
 
 #  wiki-update:
