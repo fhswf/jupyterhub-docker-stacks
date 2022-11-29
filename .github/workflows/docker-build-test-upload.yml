@@ -108,7 +108,7 @@ jobs:
         with:
           name: ${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}-tags
           path: /tmp/tags/${{ inputs.platform }}-${{inputs.prefix}}-${{ inputs.image }}.txt
-          retention-days: 3
+          retention-days: 5
 
       - name: Write manifest and build history file 🏷
         run: python3 -m tagging.write_manifest --short-image-name ${{ inputs.image }} --hist-line-dir /tmp/hist_lines/ --manifest-dir /tmp/manifests/ --owner ${{ inputs.owner }} --registry ${{ inputs.registry }} --tag-prefix ${{ inputs.prefix }}
@@ -119,7 +119,7 @@ jobs:
         with:
           name: ${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}-manifest
           path: /tmp/manifests/${{ inputs.platform }}-${{inputs.prefix}}-${{ inputs.image }}-*.md
-          retention-days: 3
+          retention-days: 5
 
       - name: Upload build history line 💾
       
@@ -127,7 +127,7 @@ jobs:
         with:
           name: ${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}-history_line
           path: /tmp/hist_lines/${{ inputs.platform }}-${{inputs.prefix}}-${{ inputs.image }}-*.txt
-          retention-days: 3
+          retention-days: 5
 
       - name: Log disk space 
         run: df -h
@@ -144,7 +144,7 @@ jobs:
         with:
           name: ${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}
           path: /tmp/${{ inputs.image }}-${{inputs.prefix}}-${{ inputs.platform }}.tar
-          retention-days: 2
+          retention-days: 5
 
       # Self-hosted runners share a state (whole VM) between runs
       - name: Cleanup artifacts 🗑️
